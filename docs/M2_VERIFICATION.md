@@ -1,6 +1,6 @@
 # M2 verification — local inference
 
-Date: 29 October 2026 (Europe/Paris). Status: **local functional/quality PASS; raw image scan FAIL with reviewed bounded exceptions; final remote CI in progress**. No M3 Payment integration is implemented.
+Date: 29 October 2026 (Europe/Paris). Status: **functional/quality/CI PASS; raw image scan FAIL with reviewed bounded local-only exceptions**. Independent review approved; M2 is ready for review and remains unmerged. No M3 Payment integration is implemented.
 
 ## M1 integration prerequisite
 
@@ -55,4 +55,10 @@ Docker uses a dedicated Colima profile/context `fraud-ml` / `colima-fraud-ml` (2
 
 No full ML retraining is required for M2 transport/loader changes; unchanged model behavior is established by HTTP/bundle parity. Small test-training fixtures establish mechanics, not accuracy. M1's recorded test-set metrics/selection remain authoritative.
 
-Remote CI includes full quality/security/regression and a Linux Docker job with a trusted tiny fixture, actual HTTP smoke and a version-pinned Trivy scan. Initial M2 push/PR verify jobs passed; container jobs failed at the original image scan. Those failures motivated the documented remediation and remain historical failures. Final checks are pending publication of the reviewed policy. M2 has not been merged and no M3 work is included.
+Remote CI includes full quality/security/regression and a Linux Docker job with a trusted tiny fixture, actual HTTP smoke and a version-pinned Trivy scan. Initial M2 push/PR verify jobs passed; container jobs failed at the original image scan. Those failures motivated the documented remediation and remain historical failures.
+
+At reviewed application/policy head `89cb6dcee050441c073fbc3802c197733194ed00`, both [push CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40836561117) and [PR CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40836568477) completed successfully, including verify and container jobs. The image step succeeds under the explicit exception policy, not because the raw scan became clean. The following evidence-only documentation commit does not change application/policy inputs; its own CI is checked before handoff.
+
+The downloaded PR evidence confirms Linux regression **72 passed in 29.35 s**, strict types/lint and no known Python dependency vulnerability. Its amd64 image `sha256:0cca64e83458084298d2db23b05b4174c81625305718bb80dab74ddeb2c36fe9` has the same 44/eight exception result and raw scanner exit 1; see M2-ci-image-policy-result.json and M2-ci-summary.txt. CI image identity differs from the local arm64 build as expected.
+
+[Private PR #2](https://github.com/WYLLLY/fraud-detection-ml-service/pull/2) remains unmerged; M2 merge requires a separate user decision. No M3 work is included. After local verification the dedicated fraud-ml container/network were removed and its Colima VM stopped; the global Docker context is default. Payment profiles were not started or modified.

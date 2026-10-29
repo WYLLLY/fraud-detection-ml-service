@@ -1,0 +1,5 @@
+verify	Lint, format and strict types	2026-10-29T07:37:14.4228626Z All checks passed!
+verify	Lint, format and strict types	2026-10-29T07:37:24.6074530Z 0 errors, 0 warnings, 0 informations
+verify	Full regression including tiny real model training and artifacts	2026-10-29T07:37:56.1540440Z ============================= 72 passed in 29.35s ==============================
+verify	Security checks against installed versions (no resolution or upgrades)	2026-10-29T07:38:00.1957941Z No known vulnerabilities found
+container	Preserve raw scan and apply reviewed local-only policy	2026-10-29T07:39:27.3897330Z {"status": "ACCEPTED_REVIEWED_EXCEPTIONS", "scanner_clean": false, "accepted_occurrences": 44, "accepted_cves": ["CVE-2025-69720", "CVE-2026-16742", "CVE-2026-54369", "CVE-2026-76642", "CVE-2026-78408", "CVE-2026-78409", "CVE-2026-78410", "CVE-2026-9538"], "expires": "2026-11-28", "image": "sha256:0cca64e83458084298d2db23b05b4174c81625305718bb80dab74ddeb2c36fe9"}

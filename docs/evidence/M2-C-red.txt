@@ -1,0 +1,432 @@
+FFFFFFFFFFFF                                                             [100%]
+=================================== FAILURES ===================================
+__________ test_reviewed_exact_exception_is_explicit_not_a_clean_scan __________
+
+    def test_reviewed_exact_exception_is_explicit_not_a_clean_scan() -> None:
+        scan,runtime,policy=fixture()
+>       result=assess(scan,runtime,policy,date(2026,10,29))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+________ test_unknown_or_out_of_scope_risk_is_never_accepted[critical] _________
+
+change = 'critical'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...ities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'CRITICAL'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+_________ test_unknown_or_out_of_scope_risk_is_never_accepted[new_cve] _________
+
+change = 'new_cve'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'Vulnerabilities': [{'VulnerabilityID': 'CVE-new', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+_______ test_unknown_or_out_of_scope_risk_is_never_accepted[new_version] _______
+
+change = 'new_version'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '2', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+______ test_unknown_or_out_of_scope_risk_is_never_accepted[fix_available] ______
+
+change = 'fix_available'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...ties': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH', ...}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+_________ test_unknown_or_out_of_scope_risk_is_never_accepted[expired] _________
+
+change = 'expired'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-10-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+__________ test_unknown_or_out_of_scope_risk_is_never_accepted[root] ___________
+
+change = 'root'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '0'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False, 'CapDrop': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+________ test_unknown_or_out_of_scope_risk_is_never_accepted[writable] _________
+
+change = 'writable'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': False, 'Privileged': Fals...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+______ test_unknown_or_out_of_scope_risk_is_never_accepted[capabilities] _______
+
+change = 'capabilities'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+_______ test_unknown_or_out_of_scope_risk_is_never_accepted[public_port] _______
+
+change = 'public_port'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+_____ test_unknown_or_out_of_scope_risk_is_never_accepted[image_mismatch] ______
+
+change = 'image_mismatch'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:other', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': Fals...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+_____ test_unknown_or_out_of_scope_risk_is_never_accepted[helper_present] ______
+
+change = 'helper_present'
+
+    @pytest.mark.parametrize('change',['critical','new_cve','new_version','fix_available','expired','root','writable','capabilities','public_port','image_mismatch','helper_present'])
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original=fixture()
+        scan,runtime,policy=deepcopy(original)
+        finding=scan['Results'][0]['Vulnerabilities'][0]
+        if change=='critical': finding['Severity']='CRITICAL'
+        elif change=='new_cve': finding['VulnerabilityID']='CVE-new'
+        elif change=='new_version': finding['InstalledVersion']='2'
+        elif change=='fix_available': finding['FixedVersion']='2'
+        elif change=='expired': policy['expires']='2026-10-28'
+        elif change=='root': runtime['Config']['User']='0'
+        elif change=='writable': runtime['HostConfig']['ReadonlyRootfs']=False
+        elif change=='capabilities': runtime['proof']['cap_eff']='0000000000000001'
+        elif change=='public_port': runtime['HostConfig']['PortBindings']['8002/tcp'][0]['HostIp']='0.0.0.0'
+        elif change=='image_mismatch': runtime['Image']='sha256:other'
+        elif change=='helper_present': runtime['proof']['helpers_absent']=False
+>       with pytest.raises(ValueError): assess(scan,runtime,policy,date(2026,10,29))
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_image_policy.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scan = {'Metadata': {'ImageID': 'sha256:test', 'OS': {'Family': 'debian', 'Name': '13.7'}}, 'Results': [{'Type': 'debian', 'V...abilities': [{'VulnerabilityID': 'CVE-known', 'PkgName': 'libexample', 'InstalledVersion': '1', 'Severity': 'HIGH'}]}]}
+runtime = {'Image': 'sha256:test', 'Config': {'User': '10001:10001'}, 'HostConfig': {'ReadonlyRootfs': True, 'Privileged': False...p': ['ALL'], 'SecurityOpt': ['no-new-privileges:true'], ...}, 'Mounts': [{'Destination': '/models', 'RW': False}], ...}
+policy = {'expires': '2026-11-28', 'exceptions': [{'id': 'CVE-known', 'package': 'libexample', 'version': '1', 'reason': 'reviewed local-only non-reachability'}]}
+today = datetime.date(2026, 10, 29)
+
+    def assess(scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/image_policy.py:7: NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/unit/test_image_policy.py::test_reviewed_exact_exception_is_explicit_not_a_clean_scan
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[critical]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[new_cve]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[new_version]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[fix_available]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[expired]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[root]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[writable]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[capabilities]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[public_port]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[image_mismatch]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[helper_present]
+12 failed in 0.05s

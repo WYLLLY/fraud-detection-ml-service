@@ -1,0 +1,18 @@
+services:
+  fraud:
+    build: .
+    image: fraud-ml:m2
+    environment:
+      FRAUD_MODEL_DIR: /models
+    ports:
+      - "127.0.0.1:8002:8002"
+    volumes:
+      - "${FRAUD_MODEL_DIR:-./artifacts/m1/bundle}:/models:ro"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    cpus: 1
+    pids_limit: 128

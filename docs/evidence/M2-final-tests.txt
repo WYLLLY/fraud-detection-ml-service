@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.15, pytest-9.2.0, pluggy-1.7.0
+rootdir: /Users/william/Documents/Projet 3
+configfile: pyproject.toml
+testpaths: tests
+plugins: platformdirs-4.14.0, anyio-4.15.1
+collected 72 items
+
+tests/api/test_api.py ....................                               [ 27%]
+tests/integration/test_experiment.py ....                                [ 33%]
+tests/unit/test_audit_inventory.py .....                                 [ 40%]
+tests/unit/test_data.py ................                                 [ 62%]
+tests/unit/test_image_policy.py .....................                    [ 91%]
+tests/unit/test_learning.py ......                                       [100%]
+
+- generated xml file: /Users/william/Documents/Projet 3/docs/evidence/M2-tests.xml -
+============================= 72 passed in 10.55s ==============================

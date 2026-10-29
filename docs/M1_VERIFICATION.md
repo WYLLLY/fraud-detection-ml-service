@@ -1,6 +1,6 @@
 # M1 verification — data and learning
 
-Date: 29 October 2026 (Europe/Paris). Scope: M1 only. Status: **local implementation/verification PASS; remote CI pending publication**. M2/M3 were not implemented during this verification.
+Date: 29 October 2026 (Europe/Paris). Scope: M1 only. Status: **PASS; reviewed, CI passed and merged via PR #1**. The original local snapshot and initial publication failures below are retained as historical evidence. M2/M3 were not implemented during M1 verification.
 
 ## Implemented behavior and design
 
@@ -79,3 +79,7 @@ Cycle F: five pre-fix behavioral failures in M1-F-red.txt; full regression after
 The second CI attempt exposed pytest console-entrypoint discovery of the repository maintenance scripts. `pythonpath = ["."]` now explicitly makes the repository script package importable for both pytest entrypoints. No test was omitted or weakened; this collection failure is setup evidence, not TDD Red. The exact CI command is rerun locally.
 
 The exact console-entrypoint command subsequently passed locally: **31 passed, 0 failures/errors/skips, 7.72 s**. Its initial sandbox DNS/build-backend failure is preserved separately in M1-ci-command-setup-failure.txt and is not counted as behavioral Red. Linux push CI at source revision ac0ed9a passed: https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40831306988 . Final PR checks are verified again immediately before merging; documentation-only evidence publication does not change the trained implementation.
+
+## Confirmed publication and merge
+
+Private repository publication was explicitly authorized by the user. The final reviewed head `408b25e37abb4b10f67b3c25cebfdc0eb8ac24f0` passed [push CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40831507841) and [PR CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40831512567). [PR #1](https://github.com/WYLLLY/fraud-detection-ml-service/pull/1) was merged with user authorization at 06:50:39 UTC on 29 October 2026, merge commit `ce42db45464abcebb9bf7814accab65c361b80aa`. Earlier pending/failing publication snapshots above are superseded by these confirmed results. M2 then started from synchronized main under the user's conditional authorization.

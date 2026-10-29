@@ -1,8 +1,11 @@
 """Trusted local bundle loading; verify all metadata before deserialization."""
 
+import importlib.metadata
 import math
+import platform
 from collections.abc import Mapping, Sequence
 from pathlib import Path
+from typing import cast
 
 import numpy as np
 import torch
@@ -53,6 +56,27 @@ def load_bundle(directory: Path) -> Bundle:
     expected_files = {"preprocessor.joblib", "model.joblib" if kind == "logistic" else "model.pt"}
     if set(manifest.get("files", {})) != expected_files:
         raise ValueError("Invalid bundle file schema")
+    environment = manifest.get("environment")
+    if not isinstance(environment, dict):
+        raise ValueError("Missing runtime compatibility metadata")
+    runtime = cast(dict[str, object], environment)
+    recorded_python = runtime.get("python")
+    packages = runtime.get("packages")
+    if (
+        not isinstance(recorded_python, str)
+        or recorded_python.split(".")[:2] != platform.python_version().split(".")[:2]
+        or not isinstance(packages, dict)
+    ):
+        raise ValueError("Incompatible Python/runtime metadata")
+    versions = cast(dict[str, object], packages)
+    for name in ("numpy", "scikit-learn", "joblib", "torch"):
+        expected, actual = versions.get(name), importlib.metadata.version(name)
+        if not isinstance(expected, str):
+            raise ValueError("Missing runtime package version")
+        if name == "torch":
+            expected, actual = expected.removesuffix("+cpu"), actual.removesuffix("+cpu")
+        if expected != actual:
+            raise ValueError(f"Incompatible runtime package {name}")
     verify_files(directory, manifest["files"])
     preprocessor = load_local(directory / "preprocessor.joblib")
     if (

@@ -1,0 +1,31 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_runtime_mismatch_is_rejected_before_unpickling ______________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-4/api-artifact0/run/bundle')
+tmp_path = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-4/test_runtime_mismatch_is_rejec0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1187dedb0>
+
+    def test_runtime_mismatch_is_rejected_before_unpickling(trained_bundle: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        import shutil
+        import fraud_ml.bundle as bundle_module
+        copied = tmp_path / 'incompatible'
+        shutil.copytree(trained_bundle, copied)
+        manifest = read_json(copied / 'manifest.json')
+        manifest['environment']['packages']['scikit-learn'] = '0.0.0'
+        manifest.pop('version')
+        write_json(copied / 'manifest.json', {**manifest, 'version': identity(manifest)})
+        calls: list[Path] = []
+        original = bundle_module.load_local
+        def tracked(path: Path) -> object:
+            calls.append(path)
+            return original(path)
+        monkeypatch.setattr(bundle_module, 'load_local', tracked)
+>       with pytest.raises(RuntimeError, match='Model startup failed'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+tests/api/test_api.py:206: Failed
+=========================== short test summary info ============================
+FAILED tests/api/test_api.py::test_runtime_mismatch_is_rejected_before_unpickling
+1 failed in 3.06s

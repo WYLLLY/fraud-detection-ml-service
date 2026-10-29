@@ -1,4 +1,4 @@
-name: M1 verification
+name: Fraud ML verification
 on: [push, pull_request]
 permissions:
   contents: read
@@ -30,3 +30,61 @@ jobs:
           uv run --frozen bandit -r src scripts
           uv run --frozen python scripts/audit_environment.py --output .local/installed.txt
           uv run --frozen pip-audit --disable-pip --no-deps --strict -r .local/installed.txt
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FRAUD_MODEL_DIR: .local/ci-run/bundle
+      MPLCONFIGDIR: ${{ github.workspace }}/.local/matplotlib
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare a tiny trusted fixture (not benchmark accuracy)
+        run: |
+          python -m pip install uv==0.12.23
+          uv sync --frozen
+          uv run --frozen fraud-ml generate --config configs/smoke.json --data-dir .local/ci-data
+          uv run --frozen fraud-ml train --data-dir .local/ci-data --output .local/ci-run
+      - name: Build and run read-only local inference
+        run: |
+          docker build -t fraud-ml:m2 .
+          docker compose config --quiet
+          docker compose up --no-build --wait --wait-timeout 90
+          uv run --frozen python scripts/smoke_api.py --bundle .local/ci-run/bundle
+          docker compose exec -T fraud python -c 'import os; assert os.getuid() == 10001'
+      - name: Preserve raw scan and apply reviewed local-only policy
+        run: |
+          mkdir -p .local/trivy-cache .local/trivy-reports
+          rm -f .local/trivy-reports/image-scan.json
+          set +e
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock:ro \
+            -v "$PWD/.local/trivy-cache:/root/.cache/trivy" \
+            -v "$PWD/.local/trivy-reports:/reports" \
+            aquasec/trivy:0.76.1 image --scanners vuln --severity HIGH,CRITICAL \
+            --exit-code 1 --format json --output /reports/image-scan.json \
+            --no-progress fraud-ml:m2
+          scanner_status=$?
+          set -e
+          docker inspect "$(docker compose ps -q fraud)" > .local/runtime.json
+          docker compose exec -T fraud python - < scripts/runtime_probe.py > .local/runtime-proof.json
+          uv run --frozen python scripts/image_policy.py \
+            --scan .local/trivy-reports/image-scan.json --runtime .local/runtime.json \
+            --proof .local/runtime-proof.json --policy configs/image-security-policy.json \
+            --scanner-exit-code "$scanner_status" --output .local/image-policy-result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: image-security-evidence
+          path: |
+            .local/trivy-reports/image-scan.json
+            .local/image-policy-result.json
+            .local/runtime-proof.json
+      - name: Container diagnostics
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Clean up test container
+        if: always()
+        run: docker compose down --remove-orphans

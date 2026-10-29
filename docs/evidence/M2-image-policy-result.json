@@ -1,0 +1,1 @@
+{"accepted_cves":["CVE-2025-69720","CVE-2026-16742","CVE-2026-54369","CVE-2026-76642","CVE-2026-78408","CVE-2026-78409","CVE-2026-78410","CVE-2026-9538"],"accepted_occurrences":44,"expires":"2026-11-28","image":"sha256:e530c4e60b33c39cd1d8b9eff04f8fbcd68d21aaf585ac57b46a10d2c1fff013","raw_scanner_exit_code":1,"scanner_clean":false,"status":"ACCEPTED_REVIEWED_EXCEPTIONS"}

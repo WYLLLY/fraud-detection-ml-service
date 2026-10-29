@@ -1,0 +1,13 @@
+   Building fraud-ml @ file:///Users/william/Documents/Projet%203
+WARN Retry attempt #0. Sleeping 1.389735915s before the next attempt
+WARN Retry attempt #1. Sleeping 3.047950705s before the next attempt
+WARN Retry attempt #2. Sleeping 7.656805852s before the next attempt
+error: Failed to build `fraud-ml @ file:///Users/william/Documents/Projet%203`
+  cause: Failed to resolve requirements from `build-system.requires`
+  cause: No solution found when resolving: `hatchling>=1.27, <2`
+  cause: Request failed after 3 retries in 12.1s
+  cause: Failed to fetch: https://pypi.org/simple/hatchling/
+  cause: error sending request for url (https://pypi.org/simple/hatchling/)
+  cause: client error (Connect)
+  cause: dns error
+  cause: failed to lookup address information: nodename nor servname provided, or not known

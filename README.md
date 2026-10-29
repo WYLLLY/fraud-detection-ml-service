@@ -1,6 +1,6 @@
 # Fraud ML — synthetic-risk experiment
 
-An independent Python portfolio project comparing logistic regression and a CPU PyTorch MLP on explicitly synthetic risk labels. **All three milestones are implemented and locally verified:** M1 data/training/evaluation, M2 local FastAPI inference and M3 read-only scoring of an existing Payment fixture. M1/M2 are merged; M3's local completion evidence remains on its feature branch. No public backend or production fraud validation is claimed.
+An independent Python portfolio project comparing logistic regression and a CPU PyTorch MLP on explicitly synthetic risk labels. **All three milestones are implemented and locally verified:** M1 data/training/evaluation, M2 local FastAPI inference and M3 read-only scoring of an existing Payment fixture. See [the global independent review](reviews/GLOBAL_REVIEW.md) for final verification and [PR #3](https://github.com/WYLLLY/fraud-detection-ml-service/pull/3) for M3 integration status. No public backend or production fraud validation is claimed.
 
 No result here demonstrates real fraud detection. The generator's probability is an evaluation-only reference; it is never a model input or a served predictor. Existing Payment records have no known synthetic label.
 

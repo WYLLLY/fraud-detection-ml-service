@@ -1,0 +1,407 @@
+[
+  {
+    "name": "annotated-doc",
+    "installed_version": "0.0.5",
+    "advisory_version": "0.0.5"
+  },
+  {
+    "name": "annotated-types",
+    "installed_version": "0.8.0",
+    "advisory_version": "0.8.0"
+  },
+  {
+    "name": "anyio",
+    "installed_version": "4.15.1",
+    "advisory_version": "4.15.1"
+  },
+  {
+    "name": "bandit",
+    "installed_version": "1.9.4",
+    "advisory_version": "1.9.4"
+  },
+  {
+    "name": "boolean.py",
+    "installed_version": "5.0",
+    "advisory_version": "5.0"
+  },
+  {
+    "name": "CacheControl",
+    "installed_version": "0.14.4",
+    "advisory_version": "0.14.4"
+  },
+  {
+    "name": "certifi",
+    "installed_version": "2026.10.23",
+    "advisory_version": "2026.10.23"
+  },
+  {
+    "name": "charset-normalizer",
+    "installed_version": "3.5.2",
+    "advisory_version": "3.5.2"
+  },
+  {
+    "name": "click",
+    "installed_version": "8.5.0",
+    "advisory_version": "8.5.0"
+  },
+  {
+    "name": "cloudpickle",
+    "installed_version": "3.1.2",
+    "advisory_version": "3.1.2"
+  },
+  {
+    "name": "contourpy",
+    "installed_version": "1.4.0",
+    "advisory_version": "1.4.0"
+  },
+  {
+    "name": "cycler",
+    "installed_version": "0.12.1",
+    "advisory_version": "0.12.1"
+  },
+  {
+    "name": "cyclonedx-python-lib",
+    "installed_version": "11.12.0",
+    "advisory_version": "11.12.0"
+  },
+  {
+    "name": "defusedxml",
+    "installed_version": "0.7.1",
+    "advisory_version": "0.7.1"
+  },
+  {
+    "name": "fastapi",
+    "installed_version": "0.162.0",
+    "advisory_version": "0.162.0"
+  },
+  {
+    "name": "filelock",
+    "installed_version": "4.2.4",
+    "advisory_version": "4.2.4"
+  },
+  {
+    "name": "fonttools",
+    "installed_version": "4.68.0",
+    "advisory_version": "4.68.0"
+  },
+  {
+    "name": "fsspec",
+    "installed_version": "2026.9.0",
+    "advisory_version": "2026.9.0"
+  },
+  {
+    "name": "h11",
+    "installed_version": "0.16.0",
+    "advisory_version": "0.16.0"
+  },
+  {
+    "name": "httpcore2",
+    "installed_version": "2.16.0",
+    "advisory_version": "2.16.0"
+  },
+  {
+    "name": "httpx2",
+    "installed_version": "2.16.0",
+    "advisory_version": "2.16.0"
+  },
+  {
+    "name": "idna",
+    "installed_version": "3.20",
+    "advisory_version": "3.20"
+  },
+  {
+    "name": "iniconfig",
+    "installed_version": "2.3.1",
+    "advisory_version": "2.3.1"
+  },
+  {
+    "name": "Jinja2",
+    "installed_version": "3.1.6",
+    "advisory_version": "3.1.6"
+  },
+  {
+    "name": "joblib",
+    "installed_version": "1.6.0",
+    "advisory_version": "1.6.0"
+  },
+  {
+    "name": "kiwisolver",
+    "installed_version": "1.5.1",
+    "advisory_version": "1.5.1"
+  },
+  {
+    "name": "license-expression",
+    "installed_version": "30.4.4",
+    "advisory_version": "30.4.4"
+  },
+  {
+    "name": "markdown-it-py",
+    "installed_version": "4.2.0",
+    "advisory_version": "4.2.0"
+  },
+  {
+    "name": "MarkupSafe",
+    "installed_version": "3.0.4",
+    "advisory_version": "3.0.4"
+  },
+  {
+    "name": "matplotlib",
+    "installed_version": "3.11.2",
+    "advisory_version": "3.11.2"
+  },
+  {
+    "name": "mdurl",
+    "installed_version": "0.1.2",
+    "advisory_version": "0.1.2"
+  },
+  {
+    "name": "mpmath",
+    "installed_version": "1.3.0",
+    "advisory_version": "1.3.0"
+  },
+  {
+    "name": "msgpack",
+    "installed_version": "1.2.4",
+    "advisory_version": "1.2.4"
+  },
+  {
+    "name": "narwhals",
+    "installed_version": "2.28.0",
+    "advisory_version": "2.28.0"
+  },
+  {
+    "name": "networkx",
+    "installed_version": "3.7",
+    "advisory_version": "3.7"
+  },
+  {
+    "name": "nodeenv",
+    "installed_version": "1.11.0",
+    "advisory_version": "1.11.0"
+  },
+  {
+    "name": "nodejs-wheel-binaries",
+    "installed_version": "24.19.0",
+    "advisory_version": "24.19.0"
+  },
+  {
+    "name": "numpy",
+    "installed_version": "2.5.4",
+    "advisory_version": "2.5.4"
+  },
+  {
+    "name": "opentelemetry-api",
+    "installed_version": "1.45.1",
+    "advisory_version": "1.45.1"
+  },
+  {
+    "name": "packageurl-python",
+    "installed_version": "0.17.6",
+    "advisory_version": "0.17.6"
+  },
+  {
+    "name": "packaging",
+    "installed_version": "26.3",
+    "advisory_version": "26.3"
+  },
+  {
+    "name": "pandas",
+    "installed_version": "2.3.3",
+    "advisory_version": "2.3.3"
+  },
+  {
+    "name": "pandas-stubs",
+    "installed_version": "3.0.5.260914",
+    "advisory_version": "3.0.5.260914"
+  },
+  {
+    "name": "pillow",
+    "installed_version": "13.0.0",
+    "advisory_version": "13.0.0"
+  },
+  {
+    "name": "pip",
+    "installed_version": "26.2.2",
+    "advisory_version": "26.2.2"
+  },
+  {
+    "name": "pip-requirements-parser",
+    "installed_version": "32.0.1",
+    "advisory_version": "32.0.1"
+  },
+  {
+    "name": "pip_api",
+    "installed_version": "0.0.35",
+    "advisory_version": "0.0.35"
+  },
+  {
+    "name": "pip_audit",
+    "installed_version": "2.10.1",
+    "advisory_version": "2.10.1"
+  },
+  {
+    "name": "platformdirs",
+    "installed_version": "4.14.0",
+    "advisory_version": "4.14.0"
+  },
+  {
+    "name": "pluggy",
+    "installed_version": "1.7.0",
+    "advisory_version": "1.7.0"
+  },
+  {
+    "name": "py-serializable",
+    "installed_version": "2.1.0",
+    "advisory_version": "2.1.0"
+  },
+  {
+    "name": "pydantic",
+    "installed_version": "2.14.1",
+    "advisory_version": "2.14.1"
+  },
+  {
+    "name": "pydantic_core",
+    "installed_version": "2.50.1",
+    "advisory_version": "2.50.1"
+  },
+  {
+    "name": "Pygments",
+    "installed_version": "2.21.0",
+    "advisory_version": "2.21.0"
+  },
+  {
+    "name": "pyparsing",
+    "installed_version": "3.3.3",
+    "advisory_version": "3.3.3"
+  },
+  {
+    "name": "pyright",
+    "installed_version": "1.1.414",
+    "advisory_version": "1.1.414"
+  },
+  {
+    "name": "pytest",
+    "installed_version": "9.2.0",
+    "advisory_version": "9.2.0"
+  },
+  {
+    "name": "python-dateutil",
+    "installed_version": "3.0.0",
+    "advisory_version": "3.0.0"
+  },
+  {
+    "name": "pytz",
+    "installed_version": "2026.5",
+    "advisory_version": "2026.5"
+  },
+  {
+    "name": "PyYAML",
+    "installed_version": "6.0.3",
+    "advisory_version": "6.0.3"
+  },
+  {
+    "name": "requests",
+    "installed_version": "2.34.2",
+    "advisory_version": "2.34.2"
+  },
+  {
+    "name": "rich",
+    "installed_version": "15.0.0",
+    "advisory_version": "15.0.0"
+  },
+  {
+    "name": "ruff",
+    "installed_version": "0.17.3",
+    "advisory_version": "0.17.3"
+  },
+  {
+    "name": "scikit-learn",
+    "installed_version": "1.9.1",
+    "advisory_version": "1.9.1"
+  },
+  {
+    "name": "scipy",
+    "installed_version": "1.18.1",
+    "advisory_version": "1.18.1"
+  },
+  {
+    "name": "setuptools",
+    "installed_version": "84.2.1",
+    "advisory_version": "84.2.1"
+  },
+  {
+    "name": "six",
+    "installed_version": "1.17.0",
+    "advisory_version": "1.17.0"
+  },
+  {
+    "name": "sortedcontainers",
+    "installed_version": "2.4.0",
+    "advisory_version": "2.4.0"
+  },
+  {
+    "name": "starlette",
+    "installed_version": "1.10.0",
+    "advisory_version": "1.10.0"
+  },
+  {
+    "name": "stevedore",
+    "installed_version": "5.9.1",
+    "advisory_version": "5.9.1"
+  },
+  {
+    "name": "sympy",
+    "installed_version": "1.14.0",
+    "advisory_version": "1.14.0"
+  },
+  {
+    "name": "threadpoolctl",
+    "installed_version": "3.7.0",
+    "advisory_version": "3.7.0"
+  },
+  {
+    "name": "tomli",
+    "installed_version": "2.5.0",
+    "advisory_version": "2.5.0"
+  },
+  {
+    "name": "tomli_w",
+    "installed_version": "1.2.0",
+    "advisory_version": "1.2.0"
+  },
+  {
+    "name": "torch",
+    "installed_version": "2.15.0",
+    "advisory_version": "2.15.0"
+  },
+  {
+    "name": "truststore",
+    "installed_version": "0.10.5",
+    "advisory_version": "0.10.5"
+  },
+  {
+    "name": "typing-inspection",
+    "installed_version": "0.4.4",
+    "advisory_version": "0.4.4"
+  },
+  {
+    "name": "typing_extensions",
+    "installed_version": "4.16.0",
+    "advisory_version": "4.16.0"
+  },
+  {
+    "name": "tzdata",
+    "installed_version": "2026.6",
+    "advisory_version": "2026.6"
+  },
+  {
+    "name": "urllib3",
+    "installed_version": "2.8.0",
+    "advisory_version": "2.8.0"
+  },
+  {
+    "name": "uvicorn",
+    "installed_version": "0.54.0",
+    "advisory_version": "0.54.0"
+  }
+]

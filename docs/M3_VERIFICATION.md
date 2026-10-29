@@ -1,66 +1,78 @@
 # M3 verification — read-only Payment scoring
 
-Date: 29 October 2026 (Europe/Paris). Scope: M3 implementation on `feature/m3-payment-demo`, based on merged M2 `2cfcbdf`. **Implementation/tests/review/CI PASS; actual demo SKIPPED pending fixture authorization. Raw image scan FAIL with reviewed local exceptions.** M3 is incomplete and not merged.
+Verified locally on **29 October 2026 (Europe/Paris)**. **M3 local acceptance: PASS.** The real Payment+ML demonstration, full regression and independent review are complete. Application source remains the reviewed `d71deb1f79013a822e33a3ddcc6399ab1ffc84bf` revision (M2 base `2cfcbdf`). No application, model, preprocessing or training code changed during this completion. M3 has not been merged or publicly deployed by this work.
 
-## Architecture and contract
+| Gate | Result |
+| --- | --- |
+| Behavioral TDD A–D and independent source review | PASS, evidence retained |
+| Complete local pytest regression | **134 passed, 0 failed, 0 errors, 0 skipped; 16.91 s** |
+| Ruff, formatting, strict Pyright, Bandit | PASS; no type diagnostics or source-scan findings |
+| Locked Python dependency audit | PASS at the unchanged reviewed environment; no dependency changes |
+| Real standard CLI with actual Payment and ML APIs | **PASS**, experimental score 0.011041127797303131 |
+| Read-only request observation and before/after snapshots | **PASS**, as scoped below |
+| Independent local-acceptance review | **APPROVE**, no unresolved source finding |
+| Image raw scan | **FAIL**, 44 HIGH occurrences/eight CVEs, zero CRITICAL |
+| Separate bounded image policy | **ACCEPTED_REVIEWED_EXCEPTIONS**, never a clean scan |
+| Public backend or browser scorer | NOT IMPLEMENTED / outside the approved local M3 scope |
 
-`payment_demo.py` owns validated local HTTP orchestration, bounded responses/deadlines and safe abstention. `cli.py` owns parsing, environment-token input and rendering; offline experiment imports are lazy. The existing M2 inference API and all training/generation code are unchanged. HTTPX2 moves from dev to runtime without changing any locked package version.
+## Implementation and TDD
 
-The Payment HTTP contract was re-read from Projet 1's `payments/schemas.py` and authenticated `GET /payments/{payment_id}`. No Payment internals are imported into ML. The client validates the eight existing response fields, requested UUID, strict financial values, state and dates. Only amount_minor/currency go to ML. There is no currency conversion or fabricated label.
+`payment_demo.py` owns validated local HTTP orchestration, bounded responses/deadlines and safe abstention. `cli.py` parses arguments, reads the environment token and renders results; offline experiment imports are lazy. Only amount_minor/currency go to ML. Separate clients disable redirects, retries and environment proxies. A token-free health GET pins model identity before scoring. Every HTTP call has a 1 s connection timeout and a 5 s total deadline enclosing headers and streamed body; successful JSON bodies are limited to 16 KiB. Peer metadata must explicitly identify synthetic experimental scoring. No failure becomes zero risk.
 
-A token-free GET /health pins model version before POST /score. Explicit experimental/schema/training markers and a finite score are mandatory; peer defaults cannot fill missing metadata. Two independent clients, loopback-only distinct ports, no redirects/retries/proxies and request-local bearer headers protect credential separation. A failed request never becomes zero risk. Logs/output omit tokens, raw errors and payment bodies.
+The actual PaymentResponse contract was re-read from Projet 1. The client validates identity, strict financial values, currency, state and dates without importing Payment internals, running SQL, logging in or creating/retrying/cancelling/finalizing a payment. No currency conversion or ground-truth label is invented. Inference and the demonstration import neither generator nor training loop. HTTPX2 was moved from dev to runtime without changing locked versions.
 
-Each call has a 1 s connection timeout and an absolute 5 s asyncio deadline enclosing headers and streamed body. Successful JSON responses are limited to 16 KiB. The blocked-body test actually runs for five seconds and observes cancellation, rather than relying on socket inactivity or a random delay.
-
-## TDD and regressions
-
-| Cycle | Behavioral Red | Green |
+| Cycle | Recorded behavioral Red | Green |
 | --- | --- | --- |
-| A | 56 failures against contract-only scaffold, no import/setup failure | 56 passed |
-| B | Numeric `1` was accepted as the experimental boolean: 1 failed / 56 passed | Covered by subsequent 61-case combined run |
-| C | CLI command absent and imports loaded training: four behavioral failures, including controlled real HTTP subprocess | 61 combined client/CLI cases passed |
-| D | Independent review: port 0 reached transport; 1 failed / 9 passed, other cases deselected | 10 passed; no request on invalid URLs |
+| A | 56 failures against a contract-only scaffold, no import/setup failure | 56 passed |
+| B | Numeric 1 accepted as the experimental boolean: 1 failed/56 passed | Subsequent 61-case combined run passed |
+| C | Missing CLI command and training-import coupling: four behavioral failures | 61 combined client/CLI cases passed |
+| D | Review found port 0 reached transport: 1 failed/9 passed | 10 URL cases passed, with no request on invalid URLs |
 
-Final full regression after the review correction: **134 passed, zero failed/errors/skipped in 17.15 s**. All M1/M2 tests retained. Exact output/JUnit and Red/Green traces are in docs/evidence/M3-*. No full 60,000-row retraining was needed or performed; the selected M1 bundle remains authoritative.
+All earlier M1/M2 regressions were retained. No full 60,000-row retraining was needed or performed. The fresh local 134-case run, JUnit, lint, format, type and Bandit reports are `docs/evidence/M3-final-local-*`. The image/model and installed dependency set are unchanged from the reviewed build. The evidence probe is an opt-in observation artifact, not new product behavior or a CI replacement. Its first setup attempt followed the Python symlink outside the virtual environment; correcting the executable path resolved that import failure. It is not counted as TDD Red.
 
-Ruff and formatting PASS; strict Pyright src/tests/scripts PASS (0 errors/warnings); Bandit PASS; exact installed-environment pip-audit PASS with no known Python dependency vulnerability. Frozen offline lock/sync passed; the lock diff changes dependency placement only. Both remote verify/container jobs passed as recorded below.
+## Actual local demonstration
 
-## Actual demo prerequisite and current blocker
+The user explicitly authorized one fictional payment of **1,500 EUR minor units (15 simulated EUR), with zero real expenditure**. This superseded the earlier authorization hold. Preparation was separate from M3: Projet 1's existing opt-in seed tool funded dedicated fictional fixtures, and an external setup helper created exactly one payment in the isolated `fraud-m3-payment` Compose project. That operation was not performed by the scoring client. The provider was Projet 1's local HTTP simulator. No source/configuration/migration file in Projet 1 was modified.
 
-An isolated `fraud-m3-payment` Compose project was started inside the dedicated `colima-fraud-ml` VM using Projet 1's existing files read-only, fresh temporary credentials outside both repositories and separate loopback ports. Its existing opt-in seed tool prepared fictional fixture users/wallets. Existing Payment/AI Colima profiles remain stopped. The global Docker context is default.
+The ordinary installed `fraud-ml demo` CLI first succeeded without instrumentation. A second read-only run used the retained observation probe, which calls the original HTTP transport and substitutes no response. Both outputs match exactly. The fixture was already terminal before each scoring run.
 
-No existing Payment token was available. Automatic authorization review **rejected the fixture-preparation POST /payments**, interpreting it as incompatible with the read-only rule. That command was not executed. Explicit owner approval for one fictional local fixture, or an existing authorized payment/token, is pending. The M3 client itself never creates a payment. Until a real demonstration succeeds, this acceptance gate is **SKIPPED / M3 incomplete**, regardless of the controlled HTTP tests.
+| Observed CLI service | Method | Route | Result |
+| --- | --- | --- | --- |
+| Actual Payment API | GET | /payments/{payment_id} | 200 |
+| Actual ML API | GET | /health | 200 |
+| Actual ML API | POST | /score | 200 |
 
-## Independent review and remaining gates
+Payment token headers appear only on the Payment GET. Only the two expected features reach ML. The inference container has no PAYMENT_API_TOKEN. The probe records no bearer value or payment body. No generator, training or torch module is imported by the CLI process.
 
-The separate m3_review agent inspected the scoped source and A/B/C evidence, independently ran 61 M3 tests (5.91 s), Ruff and Pyright, and identified the low port-zero defect. It was fixed in the implementation lane after recorded D Red, then the entire suite was rerun. Follow-up source verdict: APPROVE, with 10 independently passed URL regressions (0.11 s) and zero type/lint errors. The reviewer independently supplied expanded source digest `3412f3d4f27c59cd597248db3e880c9b497a1442d2ed2941516f077c44af0a8c`; the policy refresh required an exact match before writing. Actual-demo acceptance remains separate.
+- Fixture ID: `6710471a-c545-4390-a346-200827d86d0c`; state **succeeded → succeeded**.
+- Full returned payment and wallet responses are byte-identical before/after scoring.
+- The **returned ledger-history page** is also byte-identical: default limit 50, offset 0, four entries observed. This is not a global or exhaustive ledger audit.
+- Score: **0.011041127797303131**; indicator: **low_synthetic_risk**; CLI exit code 0.
+- Selected full M1 model: `f7adeda45315d194650515fcea43bf8e71732a5a582d0cb2e8778db2746a17f2`.
+- The required French experimental notice is present. No claim that the prediction is correct is made: this payment has no known synthetic label or real-fraud ground truth.
 
-Final image `sha256:b181fbdd368dce2f0f0c0f1fc2d5488e0ce4d16d82f7dbd9a0962bfef9dd9df0` was rebuilt with runtime HTTPX2, started with the full trusted M1 bundle, and passed real HTTP smoke (EUR/USD/JPY, max error 0). UID10001, zero capabilities, no-new-privileges, removed privileged helpers and absent vulnerable optional components are recorded in M3-runtime-proof.json. Docker inspection confirmed read-only root/model mount and loopback-only publication. No Payment token is configured for the ML service.
+Retained proof: [fixture preparation](evidence/M3-fixture-preparation.json), [ordinary CLI output](evidence/M3-real-cli.json), [real-service observation](evidence/M3-real-demo.json), [probe source](evidence/M3-real-demo-probe.py). Parent snapshot GETs and fixture preparation are distinct from the three observed CLI requests. Ordinary and observational scoring runs perform no financial writes.
 
-Fresh Trivy 0.76.1 scan: raw **FAIL/exit 1**, 44 HIGH occurrences across the same eight Debian CVEs, zero CRITICAL. The separate policy reports **ACCEPTED_REVIEWED_EXCEPTIONS, scanner_clean=false**, with unchanged tuples and 2026-11-28 expiry. No Python dependency vulnerability, new advisory, broad ignore or deadline extension was accepted. The expanded reviewed scope includes cli.py/payment_demo.py and dependency inputs. Raw scan, separate decision, runtime and smoke evidence are retained as M3-image-scan.json, M3-image-policy-result.json, M3-runtime-proof.json and M3-container-smoke.json. Final image evidence was submitted to the independent reviewer; no actual Payment acceptance is inferred from it.
+## Services and image security
 
-The final image follow-up independently approved source and bounded local policy, reran the actual policy CLI and verified matching runtime restrictions and absence of PAYMENT_API_TOKEN in the service. Recorded smoke was inspected, not independently rerun. No source finding remains; missing actual Payment acceptance still prevents milestone completion.
+Both stacks ran on `colima-fraud-ml`, with separate Compose projects/volumes and loopback ports: Payment 18000, provider 18001, PostgreSQL 15434, ML 8002. Existing Payment/AI VM profiles were not started. The global Docker context is default.
 
-## Remote evidence and handoff
+- Payment source: `22e5fdb6709d40fc17afe697b90eeac52e086edc`; image `sha256:00a04a0c2e47db41ced6aceb7fe25dd220ad046d94580388d2b62ebcb142a472`.
+- ML image: `sha256:b181fbdd368dce2f0f0c0f1fc2d5488e0ce4d16d82f7dbd9a0962bfef9dd9df0`.
+- Final runtime checks confirm UID10001, read-only root/model, no capabilities, no-new-privileges, loopback publication and removed unused privileged helpers/optional vulnerable components.
 
-At source head `5e46755721b69b200fce9677d6a8d2d15333103e`, [push CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40870726817) and [PR CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40870907218) both completed successfully, including verify and container jobs. Downloaded PR logs confirm **134 tests passed in 33.55 s**, zero type diagnostics and no known Python dependency vulnerability. The amd64 image `sha256:4dbf7ccae0c97db81294edb9b7e15ab8aa7514726e813019a22d64289a1898f0` has the same 44/eight explicitly non-clean exception result. See M3-ci-summary.txt and M3-ci-image-policy-result.json. A following evidence-only documentation commit does not alter the reviewed source/image scope.
+The retained Trivy 0.76.1 report belongs to this exact ML image. Its raw exit remains **1/FAIL**: 44 HIGH occurrences/eight inherited Debian CVEs, zero CRITICAL. The policy was rechecked against the current container inspection and unchanged independently reviewed source digest `3412f3d4f27c59cd597248db3e880c9b497a1442d2ed2941516f077c44af0a8c`. It reports scanner_clean=false with unchanged **28 November 2026** expiry. No advisory, fix availability or expiry extension was silently accepted. This completion reused the matching immutable image scan rather than claiming a new vulnerability-database scan.
 
-[Private PR #3](https://github.com/WYLLLY/fraud-detection-ml-service/pull/3) remains **draft and unmerged**, because the real demonstration is still SKIPPED. No automatic merge is enabled. The task-owned ML/Payment fixture containers and fraud-ml VM were stopped while awaiting the pending fixture decision; volumes were preserved. Existing Payment/AI VM profiles were not started and Projet 1's Git state is unchanged apart from its pre-existing untracked review file. Temporary fixture credentials remain outside both repositories and have never been sent to ML or committed.
+See M3-image-scan.json, M3-final-local-runtime.json and M3-final-local-image-policy.json. The earlier full-M1 HTTP smoke matched EUR/USD/JPY with max observed error 0. These local exceptions do not approve public exposure or production use.
 
-## Reproducible checks
+## Independent review and publication boundary
 
-```sh
-uv sync --frozen
-uv run --frozen ruff check .
-uv run --frozen ruff format --check .
-uv run --frozen pyright
-uv run --frozen pytest --junitxml=docs/evidence/M3-tests.xml
-uv run --frozen bandit -r src scripts
-uv run --frozen python scripts/audit_environment.py --output docs/evidence/M3-audited-environment.txt
-uv run --frozen pip-audit --disable-pip --no-deps --strict -r docs/evidence/M3-audited-environment.txt
-docker build -t fraud-ml:m2 .
-docker compose -p fraud-ml-m3 up --no-build --wait
-uv run --frozen python scripts/smoke_api.py --bundle artifacts/m1/bundle
-```
+The separate m3_review agent approved the corrected source, bounded image policy and now **local M3 acceptance**. It independently ran 62 controlled M3 tests in 5.84 s and targeted Ruff, inspected fresh 134-test evidence, and checked ordinary CLI/probe equality, fixture/model identity, original-transport forwarding, token isolation, terminal-state equality and absence of a correctness claim. It did not rerun live Payment calls or perform SQL/source edits. The ledger-page qualification above incorporates its final reporting comment. See [the review](../reviews/M3-review.md).
 
-Local commands used the synchronized `.venv/bin` equivalents for repeated checks and persistent `.local/tools/bin/uv` with `.local/uv-cache` for frozen offline lock/sync. Docker/Compose explicitly target colima-fraud-ml. The image tag follows the existing Compose contract; M3 proof identifies the actual image digest. Scan/policy commands follow M2_IMAGE_SECURITY.md, using matching M3 scan, inspection and runtime proof.
+Recorded remote evidence for the unchanged source remains valid: source head `5e46755` passed [push CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40870726817) and [PR CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40870907218), with 134 Linux tests in 33.55 s. Documentation head `d71deb1` also passed its recorded push/PR checks. This user-requested completion runs locally: no new GitHub job, push, merge, paid API call or public deployment was initiated. The existing private PR #3 awaits publication of these new local evidence/doc changes; no current remote status is inferred from local completion.
+
+## Reproduction and cost
+
+See [M3_LOCAL_DEMO.md](M3_LOCAL_DEMO.md) for separation of fixture preparation from the read-only command, secure environment-token handling and exact local service URLs. ML source still has no financial database credentials or access. The recorded real-money cost is **zero**: all funds/provider outcomes are simulated and inference runs on local CPU. Results establish this one recorded local integration, not production capacity, public availability, a global ledger audit or real-fraud accuracy.
+
+After verification, external fixture cleanup revoked its temporary session and removed the token file; this auth cleanup was not part of the scoring client. Task-owned test services and the fraud-ml VM were stopped, with volumes preserved and Docker context default. The portfolio preview remains available locally on port 3001. See M3-real-demo-cleanup.json. No Payment fixture was deleted or second payment created.

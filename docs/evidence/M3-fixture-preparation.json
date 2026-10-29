@@ -1,0 +1,11 @@
+{
+  "fixture_preparation": "complete",
+  "created_one_payment": true,
+  "previous_matching_count": 0,
+  "provider": "local simulator",
+  "funds": "fictional",
+  "real_money_spent": 0,
+  "state": "succeeded",
+  "payment_id": "6710471a-c545-4390-a346-200827d86d0c",
+  "separate_from_read_only_client": true
+}

@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-29T12:43:42.502801+00:00",
+  "real_services": true,
+  "provider": "local simulator",
+  "real_money_spent": 0,
+  "source_revision": "d71deb1f79013a822e33a3ddcc6399ab1ffc84bf",
+  "observational_probe": "forwards real transport; no mocked response",
+  "payment_state_before": "succeeded",
+  "payment_state_after": "succeeded",
+  "payment_unchanged": true,
+  "wallet_unchanged": true,
+  "returned_ledger_history_unchanged": true,
+  "ledger_history_limit": 50,
+  "ledger_history_offset": 0,
+  "ledger_history_entries_seen": 4,
+  "payment_sha256": "4be6604a3fcf6c5891a0fe8912bca4d644fa0fbf8f842cc732f1ac81d6857a2b",
+  "wallet_sha256": "7287b7416c964dc2f93cd9beee7ac71bfc348c023fd7fff7d4b69f70f91ee4d4",
+  "ledger_sha256": "11047e54d60b590f00781450c2f06acca6a1f7928d05917d532f90989fefb1a6",
+  "token_isolated": true,
+  "no_training_or_generator_import": true,
+  "cli_exit_code": 0,
+  "cli_requests": [
+    {
+      "service": "payment",
+      "method": "GET",
+      "route": "/payments/{payment_id}",
+      "status": 200
+    },
+    {
+      "service": "fraud",
+      "method": "GET",
+      "route": "/health",
+      "status": 200
+    },
+    {
+      "service": "fraud",
+      "method": "POST",
+      "route": "/score",
+      "status": 200
+    }
+  ],
+  "cli_output": {
+    "payment_id": "6710471a-c545-4390-a346-200827d86d0c",
+    "score": 0.011041127797303131,
+    "recommendation": "low_synthetic_risk",
+    "model_version": "f7adeda45315d194650515fcea43bf8e71732a5a582d0cb2e8778db2746a17f2",
+    "feature_schema_version": "synthetic-risk-v1",
+    "experimental": true,
+    "training_data": "synthetic",
+    "notice": "Score expérimental issu de données synthétiques ; aucune validation de fraude réelle ; aucun effet sur le paiement."
+  },
+  "correctness_claim": "No real-fraud or synthetic ground-truth label for this payment",
+  "inference_image": "sha256:b181fbdd368dce2f0f0c0f1fc2d5488e0ce4d16d82f7dbd9a0962bfef9dd9df0",
+  "inference_has_no_payment_token": true,
+  "payment_image": "sha256:00a04a0c2e47db41ced6aceb7fe25dd220ad046d94580388d2b62ebcb142a472",
+  "payment_source_revision": "22e5fdb6709d40fc17afe697b90eeac52e086edc"
+}

@@ -1,0 +1,15 @@
+........................................................F                [100%]
+=================================== FAILURES ===================================
+___________ test_numeric_true_is_not_an_explicit_experimental_marker ___________
+
+    def test_numeric_true_is_not_an_explicit_experimental_marker() -> None:
+        services = Services()
+        services.prediction["experimental"] = 1
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DemoError
+
+tests/integration/test_payment_demo.py:311: Failed
+=========================== short test summary info ============================
+FAILED tests/integration/test_payment_demo.py::test_numeric_true_is_not_an_explicit_experimental_marker
+1 failed, 56 passed in 5.21s

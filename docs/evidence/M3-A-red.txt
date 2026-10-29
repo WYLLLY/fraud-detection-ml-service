@@ -1,0 +1,1314 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                 [100%]
+=================================== FAILURES ===================================
+_________ test_read_only_payload_token_isolation_and_version[EUR-1500] _________
+
+currency = 'EUR', amount = 1500
+
+    @pytest.mark.parametrize("currency,amount", [("EUR", 1500), ("USD", 12000), ("JPY", 15000)])
+    def test_read_only_payload_token_isolation_and_version(currency: str, amount: int) -> None:
+        services = Services()
+        original = deepcopy(services.payment)
+        services.payment.update(currency=currency, amount_minor=amount)
+>       result = services.run()
+                 ^^^^^^^^^^^^^^
+
+tests/integration/test_payment_demo.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/test_payment_demo.py:72: in run
+    return asyncio.run(
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payment_id = UUID('00000000-0000-4000-8000-000000000123')
+payment_api_url = 'http://127.0.0.1:18000'
+fraud_api_url = 'http://127.0.0.1:18002', token = 'test-only-secret-canary'
+payment_transport = <httpx2.MockTransport object at 0x10bb29370>
+fraud_transport = <httpx2.MockTransport object at 0x10bb293d0>
+
+    async def score_payment(
+        payment_id: UUID,
+        payment_api_url: str,
+        fraud_api_url: str,
+        token: str,
+        *,
+        payment_transport: httpx2.AsyncBaseTransport | None = None,
+        fraud_transport: httpx2.AsyncBaseTransport | None = None,
+    ) -> DemoResult:
+>       raise DemoError("not_implemented")
+E       fraud_ml.payment_demo.DemoError: not_implemented
+
+src/fraud_ml/payment_demo.py:37: DemoError
+________ test_read_only_payload_token_isolation_and_version[USD-12000] _________
+
+currency = 'USD', amount = 12000
+
+    @pytest.mark.parametrize("currency,amount", [("EUR", 1500), ("USD", 12000), ("JPY", 15000)])
+    def test_read_only_payload_token_isolation_and_version(currency: str, amount: int) -> None:
+        services = Services()
+        original = deepcopy(services.payment)
+        services.payment.update(currency=currency, amount_minor=amount)
+>       result = services.run()
+                 ^^^^^^^^^^^^^^
+
+tests/integration/test_payment_demo.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/test_payment_demo.py:72: in run
+    return asyncio.run(
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payment_id = UUID('00000000-0000-4000-8000-000000000123')
+payment_api_url = 'http://127.0.0.1:18000'
+fraud_api_url = 'http://127.0.0.1:18002', token = 'test-only-secret-canary'
+payment_transport = <httpx2.MockTransport object at 0x10bb29280>
+fraud_transport = <httpx2.MockTransport object at 0x10bb29310>
+
+    async def score_payment(
+        payment_id: UUID,
+        payment_api_url: str,
+        fraud_api_url: str,
+        token: str,
+        *,
+        payment_transport: httpx2.AsyncBaseTransport | None = None,
+        fraud_transport: httpx2.AsyncBaseTransport | None = None,
+    ) -> DemoResult:
+>       raise DemoError("not_implemented")
+E       fraud_ml.payment_demo.DemoError: not_implemented
+
+src/fraud_ml/payment_demo.py:37: DemoError
+________ test_read_only_payload_token_isolation_and_version[JPY-15000] _________
+
+currency = 'JPY', amount = 15000
+
+    @pytest.mark.parametrize("currency,amount", [("EUR", 1500), ("USD", 12000), ("JPY", 15000)])
+    def test_read_only_payload_token_isolation_and_version(currency: str, amount: int) -> None:
+        services = Services()
+        original = deepcopy(services.payment)
+        services.payment.update(currency=currency, amount_minor=amount)
+>       result = services.run()
+                 ^^^^^^^^^^^^^^
+
+tests/integration/test_payment_demo.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/test_payment_demo.py:72: in run
+    return asyncio.run(
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.local/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+payment_id = UUID('00000000-0000-4000-8000-000000000123')
+payment_api_url = 'http://127.0.0.1:18000'
+fraud_api_url = 'http://127.0.0.1:18002', token = 'test-only-secret-canary'
+payment_transport = <httpx2.MockTransport object at 0x10bb292b0>
+fraud_transport = <httpx2.MockTransport object at 0x10bb28da0>
+
+    async def score_payment(
+        payment_id: UUID,
+        payment_api_url: str,
+        fraud_api_url: str,
+        token: str,
+        *,
+        payment_transport: httpx2.AsyncBaseTransport | None = None,
+        fraud_transport: httpx2.AsyncBaseTransport | None = None,
+    ) -> DemoResult:
+>       raise DemoError("not_implemented")
+E       fraud_ml.payment_demo.DemoError: not_implemented
+
+src/fraud_ml/payment_demo.py:37: DemoError
+_____________ test_missing_or_invalid_token_stops_before_network[] _____________
+
+token = ''
+
+    @pytest.mark.parametrize("token", ["", " ", "with\nnewline", "with space"])
+    def test_missing_or_invalid_token_stops_before_network(token: str) -> None:
+        services = Services()
+>       with pytest.raises(DemoError, match="authentication_required"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'authentication_required'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:112: AssertionError
+____________ test_missing_or_invalid_token_stops_before_network[ ] _____________
+
+token = ' '
+
+    @pytest.mark.parametrize("token", ["", " ", "with\nnewline", "with space"])
+    def test_missing_or_invalid_token_stops_before_network(token: str) -> None:
+        services = Services()
+>       with pytest.raises(DemoError, match="authentication_required"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'authentication_required'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:112: AssertionError
+______ test_missing_or_invalid_token_stops_before_network[with\nnewline] _______
+
+token = 'with\nnewline'
+
+    @pytest.mark.parametrize("token", ["", " ", "with\nnewline", "with space"])
+    def test_missing_or_invalid_token_stops_before_network(token: str) -> None:
+        services = Services()
+>       with pytest.raises(DemoError, match="authentication_required"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'authentication_required'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:112: AssertionError
+________ test_missing_or_invalid_token_stops_before_network[with space] ________
+
+token = 'with space'
+
+    @pytest.mark.parametrize("token", ["", " ", "with\nnewline", "with space"])
+    def test_missing_or_invalid_token_stops_before_network(token: str) -> None:
+        services = Services()
+>       with pytest.raises(DemoError, match="authentication_required"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'authentication_required'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:112: AssertionError
+_ test_only_distinct_local_service_origins[http://example.com-http://127.0.0.1:18002] _
+
+payment_url = 'http://example.com', fraud_url = 'http://127.0.0.1:18002'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://user:secret@127.0.0.1:18000-http://127.0.0.1:18002] _
+
+payment_url = 'http://user:secret@127.0.0.1:18000'
+fraud_url = 'http://127.0.0.1:18002'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://127.0.0.1:18000/prefix-http://127.0.0.1:18002] _
+
+payment_url = 'http://127.0.0.1:18000/prefix'
+fraud_url = 'http://127.0.0.1:18002'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://127.0.0.1:18000?secret=1-http://127.0.0.1:18002] _
+
+payment_url = 'http://127.0.0.1:18000?secret=1'
+fraud_url = 'http://127.0.0.1:18002'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://127.0.0.1:18000#fragment-http://127.0.0.1:18002] _
+
+payment_url = 'http://127.0.0.1:18000#fragment'
+fraud_url = 'http://127.0.0.1:18002'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://127.0.0.1:18000-http://127.0.0.1:18000] _
+
+payment_url = 'http://127.0.0.1:18000', fraud_url = 'http://127.0.0.1:18000'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://127.0.0.1:18000-http://localhost:18000] _
+
+payment_url = 'http://127.0.0.1:18000', fraud_url = 'http://localhost:18000'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://127.0.0.1:18000-file:///tmp/model] _
+
+payment_url = 'http://127.0.0.1:18000', fraud_url = 'file:///tmp/model'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+_ test_only_distinct_local_service_origins[http://127.0.0.1:99999-http://127.0.0.1:18002] _
+
+payment_url = 'http://127.0.0.1:99999', fraud_url = 'http://127.0.0.1:18002'
+
+    @pytest.mark.parametrize(
+        "payment_url,fraud_url",
+        [
+            ("http://example.com", FRAUD_URL),
+            ("http://user:secret@127.0.0.1:18000", FRAUD_URL),
+            (PAYMENT_URL + "/prefix", FRAUD_URL),
+            (PAYMENT_URL + "?secret=1", FRAUD_URL),
+            (PAYMENT_URL + "#fragment", FRAUD_URL),
+            (PAYMENT_URL, PAYMENT_URL),
+            (PAYMENT_URL, "http://localhost:18000"),
+            (PAYMENT_URL, "file:///tmp/model"),
+            ("http://127.0.0.1:99999", FRAUD_URL),
+        ],
+    )
+    def test_only_distinct_local_service_origins(payment_url: str, fraud_url: str) -> None:
+>       with pytest.raises(DemoError, match="invalid_service_urls"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_service_urls'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:132: AssertionError
+____ test_payment_failures_never_score_or_retry[401-payment_authentication] ____
+
+status = 401, code = 'payment_authentication'
+
+    @pytest.mark.parametrize(
+        "status,code",
+        [(401, "payment_authentication"), (403, "payment_authentication"),
+         (404, "payment_not_found"), (429, "payment_unavailable"),
+         (500, "payment_unavailable"), (302, "payment_redirect_rejected")],
+    )
+    def test_payment_failures_never_score_or_retry(status: int, code: str) -> None:
+        services = Services(payment_status=status)
+>       with pytest.raises(DemoError, match=code):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_authentication'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:144: AssertionError
+____ test_payment_failures_never_score_or_retry[403-payment_authentication] ____
+
+status = 403, code = 'payment_authentication'
+
+    @pytest.mark.parametrize(
+        "status,code",
+        [(401, "payment_authentication"), (403, "payment_authentication"),
+         (404, "payment_not_found"), (429, "payment_unavailable"),
+         (500, "payment_unavailable"), (302, "payment_redirect_rejected")],
+    )
+    def test_payment_failures_never_score_or_retry(status: int, code: str) -> None:
+        services = Services(payment_status=status)
+>       with pytest.raises(DemoError, match=code):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_authentication'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:144: AssertionError
+______ test_payment_failures_never_score_or_retry[404-payment_not_found] _______
+
+status = 404, code = 'payment_not_found'
+
+    @pytest.mark.parametrize(
+        "status,code",
+        [(401, "payment_authentication"), (403, "payment_authentication"),
+         (404, "payment_not_found"), (429, "payment_unavailable"),
+         (500, "payment_unavailable"), (302, "payment_redirect_rejected")],
+    )
+    def test_payment_failures_never_score_or_retry(status: int, code: str) -> None:
+        services = Services(payment_status=status)
+>       with pytest.raises(DemoError, match=code):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_not_found'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:144: AssertionError
+_____ test_payment_failures_never_score_or_retry[429-payment_unavailable] ______
+
+status = 429, code = 'payment_unavailable'
+
+    @pytest.mark.parametrize(
+        "status,code",
+        [(401, "payment_authentication"), (403, "payment_authentication"),
+         (404, "payment_not_found"), (429, "payment_unavailable"),
+         (500, "payment_unavailable"), (302, "payment_redirect_rejected")],
+    )
+    def test_payment_failures_never_score_or_retry(status: int, code: str) -> None:
+        services = Services(payment_status=status)
+>       with pytest.raises(DemoError, match=code):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_unavailable'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:144: AssertionError
+_____ test_payment_failures_never_score_or_retry[500-payment_unavailable] ______
+
+status = 500, code = 'payment_unavailable'
+
+    @pytest.mark.parametrize(
+        "status,code",
+        [(401, "payment_authentication"), (403, "payment_authentication"),
+         (404, "payment_not_found"), (429, "payment_unavailable"),
+         (500, "payment_unavailable"), (302, "payment_redirect_rejected")],
+    )
+    def test_payment_failures_never_score_or_retry(status: int, code: str) -> None:
+        services = Services(payment_status=status)
+>       with pytest.raises(DemoError, match=code):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_unavailable'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:144: AssertionError
+__ test_payment_failures_never_score_or_retry[302-payment_redirect_rejected] ___
+
+status = 302, code = 'payment_redirect_rejected'
+
+    @pytest.mark.parametrize(
+        "status,code",
+        [(401, "payment_authentication"), (403, "payment_authentication"),
+         (404, "payment_not_found"), (429, "payment_unavailable"),
+         (500, "payment_unavailable"), (302, "payment_redirect_rejected")],
+    )
+    def test_payment_failures_never_score_or_retry(status: int, code: str) -> None:
+        services = Services(payment_status=status)
+>       with pytest.raises(DemoError, match=code):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_redirect_rejected'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:144: AssertionError
+_ test_incompatible_payment_is_never_forwarded[id-00000000-0000-0000-0000-000000000000] _
+
+key = 'id', value = '00000000-0000-0000-0000-000000000000'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+_______ test_incompatible_payment_is_never_forwarded[amount_minor-True] ________
+
+key = 'amount_minor', value = True
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+______ test_incompatible_payment_is_never_forwarded[amount_minor-1500.0] _______
+
+key = 'amount_minor', value = 1500.0
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+_______ test_incompatible_payment_is_never_forwarded[amount_minor-1500] ________
+
+key = 'amount_minor', value = '1500'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+_________ test_incompatible_payment_is_never_forwarded[amount_minor-0] _________
+
+key = 'amount_minor', value = 0
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+___ test_incompatible_payment_is_never_forwarded[amount_minor-1000000000001] ___
+
+key = 'amount_minor', value = 1000000000001
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+__________ test_incompatible_payment_is_never_forwarded[currency-GBP] __________
+
+key = 'currency', value = 'GBP'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+_________ test_incompatible_payment_is_never_forwarded[state-created] __________
+
+key = 'state', value = 'created'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+______ test_incompatible_payment_is_never_forwarded[wallet_id-not-a-uuid] ______
+
+key = 'wallet_id', value = 'not-a-uuid'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+_____ test_incompatible_payment_is_never_forwarded[created_at-not-a-date] ______
+
+key = 'created_at', value = 'not-a-date'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("id", str(UUID(int=0))), ("amount_minor", True), ("amount_minor", 1500.0),
+         ("amount_minor", "1500"), ("amount_minor", 0), ("amount_minor", 10**12 + 1),
+         ("currency", "GBP"), ("state", "created"), ("wallet_id", "not-a-uuid"),
+         ("created_at", "not-a-date")],
+    )
+    def test_incompatible_payment_is_never_forwarded(key: str, value: object) -> None:
+        services = Services()
+        services.payment[key] = value
+>       with pytest.raises(DemoError, match="invalid_payment_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_payment_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:159: AssertionError
+_____________ test_outside_synthetic_domain_is_explicit_abstention _____________
+
+    def test_outside_synthetic_domain_is_explicit_abstention() -> None:
+        services = Services()
+        services.payment["amount_minor"] = 1
+>       with pytest.raises(DemoError, match="outside_training_domain"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'outside_training_domain'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:167: AssertionError
+__________ test_ml_failure_or_redirect_has_no_score_and_no_retry[301] __________
+
+status = 301
+
+    @pytest.mark.parametrize("status", [301, 307, 422, 500, 503])
+    def test_ml_failure_or_redirect_has_no_score_and_no_retry(status: int) -> None:
+        services = Services(ml_status=status)
+>       with pytest.raises(DemoError, match="fraud_"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'fraud_'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:175: AssertionError
+__________ test_ml_failure_or_redirect_has_no_score_and_no_retry[307] __________
+
+status = 307
+
+    @pytest.mark.parametrize("status", [301, 307, 422, 500, 503])
+    def test_ml_failure_or_redirect_has_no_score_and_no_retry(status: int) -> None:
+        services = Services(ml_status=status)
+>       with pytest.raises(DemoError, match="fraud_"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'fraud_'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:175: AssertionError
+__________ test_ml_failure_or_redirect_has_no_score_and_no_retry[422] __________
+
+status = 422
+
+    @pytest.mark.parametrize("status", [301, 307, 422, 500, 503])
+    def test_ml_failure_or_redirect_has_no_score_and_no_retry(status: int) -> None:
+        services = Services(ml_status=status)
+>       with pytest.raises(DemoError, match="fraud_"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'fraud_'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:175: AssertionError
+__________ test_ml_failure_or_redirect_has_no_score_and_no_retry[500] __________
+
+status = 500
+
+    @pytest.mark.parametrize("status", [301, 307, 422, 500, 503])
+    def test_ml_failure_or_redirect_has_no_score_and_no_retry(status: int) -> None:
+        services = Services(ml_status=status)
+>       with pytest.raises(DemoError, match="fraud_"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'fraud_'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:175: AssertionError
+__________ test_ml_failure_or_redirect_has_no_score_and_no_retry[503] __________
+
+status = 503
+
+    @pytest.mark.parametrize("status", [301, 307, 422, 500, 503])
+    def test_ml_failure_or_redirect_has_no_score_and_no_retry(status: int) -> None:
+        services = Services(ml_status=status)
+>       with pytest.raises(DemoError, match="fraud_"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'fraud_'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:175: AssertionError
+_______ test_incompatible_ml_response_is_never_a_valid_score[score-nan] ________
+
+key = 'score', value = nan
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+_______ test_incompatible_ml_response_is_never_a_valid_score[score-inf] ________
+
+key = 'score', value = inf
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+______ test_incompatible_ml_response_is_never_a_valid_score[score--0.01] _______
+
+key = 'score', value = -0.01
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+_______ test_incompatible_ml_response_is_never_a_valid_score[score-1.01] _______
+
+key = 'score', value = 1.01
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+______ test_incompatible_ml_response_is_never_a_valid_score[score-False] _______
+
+key = 'score', value = False
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+_______ test_incompatible_ml_response_is_never_a_valid_score[score-0.05] _______
+
+key = 'score', value = '0.05'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+_ test_incompatible_ml_response_is_never_a_valid_score[model_version-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb] _
+
+key = 'model_version'
+value = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+_ test_incompatible_ml_response_is_never_a_valid_score[model_version-unknown] __
+
+key = 'model_version', value = 'unknown'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+___ test_incompatible_ml_response_is_never_a_valid_score[experimental-False] ___
+
+key = 'experimental', value = False
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+___ test_incompatible_ml_response_is_never_a_valid_score[training_data-real] ___
+
+key = 'training_data', value = 'real'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+_ test_incompatible_ml_response_is_never_a_valid_score[feature_schema_version-future-v2] _
+
+key = 'feature_schema_version', value = 'future-v2'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+_ test_incompatible_ml_response_is_never_a_valid_score[recommendation-approve_payment] _
+
+key = 'recommendation', value = 'approve_payment'
+
+    @pytest.mark.parametrize(
+        "key,value",
+        [("score", float("nan")), ("score", float("inf")), ("score", -0.01),
+         ("score", 1.01), ("score", False), ("score", "0.05"),
+         ("model_version", "b" * 64), ("model_version", "unknown"),
+         ("experimental", False), ("training_data", "real"),
+         ("feature_schema_version", "future-v2"), ("recommendation", "approve_payment")],
+    )
+    def test_incompatible_ml_response_is_never_a_valid_score(key: str, value: object) -> None:
+        services = Services()
+        services.prediction[key] = value
+        # Response(content=...) deliberately permits nonstandard NaN JSON as a hostile peer.
+        async def handler(request: httpx2.Request) -> httpx2.Response:
+            services.requests.append(request)
+            body = services.health if request.url.path == "/health" else services.prediction
+            return httpx2.Response(200, content=json.dumps(body), headers={"content-type": "application/json"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:196: AssertionError
+____ test_metadata_defaults_must_not_hide_missing_peer_fields[experimental] ____
+
+key = 'experimental'
+
+    @pytest.mark.parametrize("key", ["experimental", "training_data", "feature_schema_version"])
+    def test_metadata_defaults_must_not_hide_missing_peer_fields(key: str) -> None:
+        services = Services()
+        del services.prediction[key]
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:206: AssertionError
+___ test_metadata_defaults_must_not_hide_missing_peer_fields[training_data] ____
+
+key = 'training_data'
+
+    @pytest.mark.parametrize("key", ["experimental", "training_data", "feature_schema_version"])
+    def test_metadata_defaults_must_not_hide_missing_peer_fields(key: str) -> None:
+        services = Services()
+        del services.prediction[key]
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:206: AssertionError
+_ test_metadata_defaults_must_not_hide_missing_peer_fields[feature_schema_version] _
+
+key = 'feature_schema_version'
+
+    @pytest.mark.parametrize("key", ["experimental", "training_data", "feature_schema_version"])
+    def test_metadata_defaults_must_not_hide_missing_peer_fields(key: str) -> None:
+        services = Services()
+        del services.prediction[key]
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:206: AssertionError
+________________ test_health_version_is_required_before_scoring ________________
+
+    def test_health_version_is_required_before_scoring() -> None:
+        services = Services(health={"status": "ok", "model_version": "unknown"})
+>       with pytest.raises(DemoError, match="invalid_fraud_response"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'invalid_fraud_response'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:212: AssertionError
+______________ test_transport_failure_is_safe_and_does_not_retry _______________
+
+    def test_transport_failure_is_safe_and_does_not_retry() -> None:
+        calls: list[str] = []
+        async def failed(request: httpx2.Request) -> httpx2.Response:
+            calls.append(request.url.path)
+            raise httpx2.ConnectError(TOKEN, request=request)
+>       with pytest.raises(DemoError, match="payment_unavailable") as error:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_unavailable'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:222: AssertionError
+_____ test_total_deadline_cancels_response_body_not_just_socket_inactivity _____
+
+    def test_total_deadline_cancels_response_body_not_just_socket_inactivity() -> None:
+        closed: list[bool] = []
+        class BlockedBody(httpx2.AsyncByteStream):
+            async def __aiter__(self):
+                try:
+                    yield b"{"
+                    await asyncio.Event().wait()
+                finally:
+                    closed.append(True)
+        async def slow(request: httpx2.Request) -> httpx2.Response:
+            return httpx2.Response(200, stream=BlockedBody(), headers={"content-type": "application/json"})
+        started = monotonic()
+>       with pytest.raises(DemoError, match="payment_timeout"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'payment_timeout'
+E         Actual message: 'not_implemented'
+
+tests/integration/test_payment_demo.py:241: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_payment_demo.py::test_read_only_payload_token_isolation_and_version[EUR-1500]
+FAILED tests/integration/test_payment_demo.py::test_read_only_payload_token_isolation_and_version[USD-12000]
+FAILED tests/integration/test_payment_demo.py::test_read_only_payload_token_isolation_and_version[JPY-15000]
+FAILED tests/integration/test_payment_demo.py::test_missing_or_invalid_token_stops_before_network[]
+FAILED tests/integration/test_payment_demo.py::test_missing_or_invalid_token_stops_before_network[ ]
+FAILED tests/integration/test_payment_demo.py::test_missing_or_invalid_token_stops_before_network[with\nnewline]
+FAILED tests/integration/test_payment_demo.py::test_missing_or_invalid_token_stops_before_network[with space]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://example.com-http://127.0.0.1:18002]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://user:secret@127.0.0.1:18000-http://127.0.0.1:18002]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://127.0.0.1:18000/prefix-http://127.0.0.1:18002]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://127.0.0.1:18000?secret=1-http://127.0.0.1:18002]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://127.0.0.1:18000#fragment-http://127.0.0.1:18002]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://127.0.0.1:18000-http://127.0.0.1:18000]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://127.0.0.1:18000-http://localhost:18000]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://127.0.0.1:18000-file:///tmp/model]
+FAILED tests/integration/test_payment_demo.py::test_only_distinct_local_service_origins[http://127.0.0.1:99999-http://127.0.0.1:18002]
+FAILED tests/integration/test_payment_demo.py::test_payment_failures_never_score_or_retry[401-payment_authentication]
+FAILED tests/integration/test_payment_demo.py::test_payment_failures_never_score_or_retry[403-payment_authentication]
+FAILED tests/integration/test_payment_demo.py::test_payment_failures_never_score_or_retry[404-payment_not_found]
+FAILED tests/integration/test_payment_demo.py::test_payment_failures_never_score_or_retry[429-payment_unavailable]
+FAILED tests/integration/test_payment_demo.py::test_payment_failures_never_score_or_retry[500-payment_unavailable]
+FAILED tests/integration/test_payment_demo.py::test_payment_failures_never_score_or_retry[302-payment_redirect_rejected]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[id-00000000-0000-0000-0000-000000000000]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[amount_minor-True]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[amount_minor-1500.0]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[amount_minor-1500]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[amount_minor-0]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[amount_minor-1000000000001]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[currency-GBP]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[state-created]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[wallet_id-not-a-uuid]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_payment_is_never_forwarded[created_at-not-a-date]
+FAILED tests/integration/test_payment_demo.py::test_outside_synthetic_domain_is_explicit_abstention
+FAILED tests/integration/test_payment_demo.py::test_ml_failure_or_redirect_has_no_score_and_no_retry[301]
+FAILED tests/integration/test_payment_demo.py::test_ml_failure_or_redirect_has_no_score_and_no_retry[307]
+FAILED tests/integration/test_payment_demo.py::test_ml_failure_or_redirect_has_no_score_and_no_retry[422]
+FAILED tests/integration/test_payment_demo.py::test_ml_failure_or_redirect_has_no_score_and_no_retry[500]
+FAILED tests/integration/test_payment_demo.py::test_ml_failure_or_redirect_has_no_score_and_no_retry[503]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[score-nan]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[score-inf]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[score--0.01]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[score-1.01]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[score-False]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[score-0.05]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[model_version-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[model_version-unknown]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[experimental-False]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[training_data-real]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[feature_schema_version-future-v2]
+FAILED tests/integration/test_payment_demo.py::test_incompatible_ml_response_is_never_a_valid_score[recommendation-approve_payment]
+FAILED tests/integration/test_payment_demo.py::test_metadata_defaults_must_not_hide_missing_peer_fields[experimental]
+FAILED tests/integration/test_payment_demo.py::test_metadata_defaults_must_not_hide_missing_peer_fields[training_data]
+FAILED tests/integration/test_payment_demo.py::test_metadata_defaults_must_not_hide_missing_peer_fields[feature_schema_version]
+FAILED tests/integration/test_payment_demo.py::test_health_version_is_required_before_scoring
+FAILED tests/integration/test_payment_demo.py::test_transport_failure_is_safe_and_does_not_retry
+FAILED tests/integration/test_payment_demo.py::test_total_deadline_cancels_response_body_not_just_socket_inactivity
+56 failed in 0.39s

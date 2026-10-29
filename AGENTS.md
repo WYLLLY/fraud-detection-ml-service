@@ -4,7 +4,7 @@
 
 Read `docs/FRAUD_ML_PLAN.md` and the requested milestone before work. This is a small synthetic-risk portfolio project with exactly M1 (data/training/evaluation), M2 (local inference), M3 (read-only payment demo). Implement only the milestone the user authorizes; completion never authorizes starting the next.
 
-M1 data, training, evaluation and artifact code is merged; M2 local FastAPI inference and Docker code exists on its feature branch. Consult docs/M1_VERIFICATION.md and docs/M2_VERIFICATION.md for measured evidence, review/CI status and limits. M3 Payment integration is not implemented. Guidance-only requests still must not bootstrap features, train models, initialize Git or deploy anything.
+M1 data/training/evaluation, M2 local inference and M3's read-only Payment HTTP client and actual local Payment+ML demonstration are implemented and locally verified; see docs/M3_LOCAL_DEMO.md and docs/evidence/M3-real-demo.json. Consult reviews/GLOBAL_REVIEW.md and GitHub PR #3 for final review and integration status; local acceptance does not imply public deployment. Consult docs/M1_VERIFICATION.md, docs/M2_VERIFICATION.md and docs/M3_VERIFICATION.md for measured evidence, review/CI status and limits. Guidance-only requests still must not bootstrap features, train models, initialize Git or deploy anything.
 
 The latest user requirement selects **Pyright**, replacing the plan's former mypy choice. All other experiment parameters and acceptance criteria remain authoritative. Report a genuine plan conflict before changing scope; do not ask again for already authorized work.
 

@@ -1,6 +1,6 @@
 # Fraud ML — synthetic-risk experiment
 
-An independent Python portfolio project comparing logistic regression and a CPU PyTorch MLP on explicitly synthetic risk labels. **M1 implements data, training, evaluation and artifact round trips; M2 serves the trusted model through local FastAPI and Docker.** The read-only Payment demo (M3) is not implemented.
+An independent Python portfolio project comparing logistic regression and a CPU PyTorch MLP on explicitly synthetic risk labels. **All three milestones are implemented and locally verified:** M1 data/training/evaluation, M2 local FastAPI inference and M3 read-only scoring of an existing Payment fixture. See [the global independent review](reviews/GLOBAL_REVIEW.md) for final verification and [PR #3](https://github.com/WYLLLY/fraud-detection-ml-service/pull/3) for M3 integration status. No public backend or production fraud validation is claimed.
 
 No result here demonstrates real fraud detection. The generator's probability is an evaluation-only reference; it is never a model input or a served predictor. Existing Payment records have no known synthetic label.
 
@@ -51,7 +51,7 @@ See [M1 test matrix](docs/M1_TEST_MATRIX.md), [verification](docs/M1_VERIFICATIO
 
 ## M2 local inference
 
-M2 provides `POST /score` and `GET /health`; M3's Payment demo remains unimplemented. Use the trusted M1 bundle produced above:
+M2 provides `POST /score` and `GET /health`. Use the trusted M1 bundle produced above:
 
 ```sh
 FRAUD_MODEL_DIR=artifacts/m1/bundle uv run --frozen uvicorn fraud_ml.api:create_app \
@@ -81,3 +81,23 @@ For this host's dedicated engine, prefix Compose commands with `DOCKER_CONTEXT=c
 See [M2 verification](docs/M2_VERIFICATION.md) and [independent review](reviews/M2-review.md). No training happens through HTTP or service startup.
 
 The image scan is **not clean**: eight inherited HIGH Debian advisories remain, with no stable fix at review time. The raw Trivy failure is preserved. A separate, tested policy accepts only exact reviewed package/advisory versions under verified local runtime restrictions until **28 November 2026**. Any critical/new/fixable/expired exception, changed serving code or missing mitigation fails CI. See [the dated security decision](docs/M2_IMAGE_SECURITY.md); this is a bounded local portfolio exception, not production approval.
+
+## M3 read-only Payment demo
+
+Requires the real local Payment API, a token for the owner of an existing payment, and the local ML API above. Set `PAYMENT_API_TOKEN` securely in the environment; never put its value in command arguments, a URL, a report or source control. For an interactive Bash/Zsh session, `read -rs PAYMENT_API_TOKEN` followed by `export PAYMENT_API_TOKEN` avoids placing the value in shell history.
+
+```sh
+uv run --frozen fraud-ml demo --payment-id YOUR_EXISTING_PAYMENT_UUID \
+  --payment-api-url http://127.0.0.1:8000 --fraud-api-url http://127.0.0.1:8002
+unset PAYMENT_API_TOKEN
+```
+
+The client makes one authenticated Payment GET, validates the existing response and identity, and forwards only `amount_minor`/`currency`. A token-free ML health GET pins the model version before the token-free score POST. Only distinct loopback service ports are permitted; userinfo, paths, queries, fragments and remote origins are rejected. Separate clients disable redirects, retries and environment proxies. Every HTTP call has a 1 s connect timeout and a genuine 5 s total deadline covering headers and body. Response bodies are bounded to 16 KiB.
+
+Success prints JSON containing the payment ID, finite score, advisory indicator, model/schema versions and explicit synthetic markers, plus the required notice: “Score expérimental issu de données synthétiques ; aucune validation de fraude réelle ; aucun effet sur le paiement.” No label or generator probability is attached to that payment. Failure prints only `Score unavailable: <safe_code>` to stderr, exits nonzero and emits no substitute score.
+
+Authentication, missing payments, incompatible data, out-of-domain features, redirects, unavailable services, malformed/version-mismatched responses and total deadlines all cause abstention. The client never creates, retries, cancels or finalizes a payment, logs in automatically, imports Payment internals or accesses SQL. It imports neither the synthetic generator nor training modules. Independent fixture preparation on a dedicated fictional test stack is separate from this command; any required authorization must be resolved before preparation.
+
+**Recorded real local demonstration: PASS (29 October 2026).** A separately prepared fictional 15 EUR payment was already succeeded before scoring. The standard CLI returned 0.011041127797303131; observational verification confirmed the same payment/wallet responses and returned ledger-history page before/after, one Payment GET and token-free ML calls. No real money was spent and no payment label or correctness claim is attached to the score. Independent review approved local M3 acceptance; 134 maintained tests passed again with zero failures/errors/skips.
+
+See [the local demo guide](docs/M3_LOCAL_DEMO.md), [M3 acceptance matrix](docs/M3_TEST_MATRIX.md), [M3 verification](docs/M3_VERIFICATION.md) and [real-service evidence](docs/evidence/M3-real-demo.json). Fixture preparation is separate from the read-only scoring command. The portfolio can show this evidence publicly while the source stays private. A proposed free browser-side scorer would require exporting the selected model and testing Python/JavaScript parity; it is not implemented by this milestone. No new cloud job, push, merge or hosting deployment was performed during local completion.

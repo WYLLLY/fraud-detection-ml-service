@@ -1,0 +1,6 @@
+{
+  "fixture_session_revoked": true,
+  "temporary_token_file_removed": true,
+  "phase": "external fixture cleanup, outside scoring CLI",
+  "financial_mutation": false
+}

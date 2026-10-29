@@ -1,7 +1,7 @@
 # Fraud Detection ML — Plan final du projet secondaire
 
 **Date :** 29 octobre 2026 — Europe/Paris  
-**Statut :** périmètre et corrections acceptés ; document de planification, aucune implémentation commencée.  
+**Statut :** protocole validé et trois milestones vérifiés localement. Voir `docs/M3_VERIFICATION.md` et `docs/M3_LOCAL_DEMO.md` pour les preuves du 29 octobre 2026, `reviews/GLOBAL_REVIEW.md` pour la review globale et [la PR M3](https://github.com/WYLLLY/fraud-detection-ml-service/pull/3) pour son état d’intégration GitHub. Les paramètres expérimentaux ci-dessous restent inchangés.
 **Workspace :** `/Users/william/Documents/Projet 3`  
 **Projet associé :** Payment & Ledger, `/Users/william/Documents/Projet 1`
 
@@ -260,4 +260,4 @@ Les commandes reproductibles à fournir sont `generate`, `train`, `evaluate` et 
 6. Tests, qualité, CI et smoke Docker passent ; la démonstration réelle M3 est vérifiée.
 7. Chaque milestone rapporte distinctement `PASS / FAIL / SKIPPED`. Le suivant commence uniquement après validation du précédent.
 
-Le projet est terminé à M3. Pas d’extension automatique vers une plateforme antifraude de production. Ce plan remplace le précédent sans démarrer l’implémentation ; aucune performance n’est encore mesurée.
+Le projet est terminé à M3. Pas d’extension automatique vers une plateforme antifraude de production. Lors de la rédaction initiale, ce plan remplaçait le précédent sans démarrer l’implémentation ; les résultats désormais mesurés et la démonstration locale sont documentés séparément. Une éventuelle démo publique dans le navigateur reste une extension de présentation à valider, et n’est pas implémentée par ces trois milestones.

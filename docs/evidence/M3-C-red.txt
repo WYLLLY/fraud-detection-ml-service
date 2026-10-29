@@ -1,0 +1,65 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+___ test_cli_real_http_minimal_payload_safe_output_and_no_environment_proxy ____
+
+    def test_cli_real_http_minimal_payload_safe_output_and_no_environment_proxy() -> None:
+        payment_calls: list[tuple[str, str, str | None, bytes]] = []
+        fraud_calls: list[tuple[str, str, str | None, bytes]] = []
+        with server(payment, payment_calls) as payment_url, server(fraud, fraud_calls) as fraud_url:
+            completed = run_cli(payment_url, fraud_url)
+>       assert completed.returncode == 0, completed.stderr
+E       AssertionError: usage: -c [-h] {generate,train,evaluate} ...
+E         -c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['/Users/william/Documents/Projet 3/.venv/bin/python', '-c', 'from fraud_ml.cli import main; rai...te,train,evaluate} ...\n-c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)\n").returncode
+
+tests/integration/test_demo_cli.py:101: AssertionError
+_____________ test_cli_missing_token_is_safe_and_performs_no_http ______________
+
+    def test_cli_missing_token_is_safe_and_performs_no_http() -> None:
+        completed = run_cli("http://127.0.0.1:9", "http://127.0.0.1:10", token=False)
+        assert completed.returncode != 0
+        assert completed.stdout == ""
+>       assert "authentication_required" in completed.stderr
+E       assert 'authentication_required' in "usage: -c [-h] {generate,train,evaluate} ...\n-c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)\n"
+E        +  where "usage: -c [-h] {generate,train,evaluate} ...\n-c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)\n" = CompletedProcess(args=['/Users/william/Documents/Projet 3/.venv/bin/python', '-c', 'from fraud_ml.cli import main; rai...te,train,evaluate} ...\n-c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)\n").stderr
+
+tests/integration/test_demo_cli.py:120: AssertionError
+______ test_cli_authentication_error_abstains_without_body_or_token_echo _______
+
+    def test_cli_authentication_error_abstains_without_body_or_token_echo() -> None:
+        calls: list[tuple[str, str, str | None, bytes]] = []
+        with server(lambda _: (401, {"detail": TOKEN}), calls) as payment_url:
+            completed = run_cli(payment_url, "http://127.0.0.1:10")
+        assert completed.returncode != 0
+        assert completed.stdout == ""
+>       assert "payment_authentication" in completed.stderr
+E       assert 'payment_authentication' in "usage: -c [-h] {generate,train,evaluate} ...\n-c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)\n"
+E        +  where "usage: -c [-h] {generate,train,evaluate} ...\n-c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)\n" = CompletedProcess(args=['/Users/william/Documents/Projet 3/.venv/bin/python', '-c', 'from fraud_ml.cli import main; rai...te,train,evaluate} ...\n-c: error: argument command: invalid choice: 'demo' (choose from generate, train, evaluate)\n").stderr
+
+tests/integration/test_demo_cli.py:130: AssertionError
+_____________ test_demo_import_does_not_load_training_or_generator _____________
+
+    def test_demo_import_does_not_load_training_or_generator() -> None:
+        completed = subprocess.run(
+            [sys.executable, "-c", "import fraud_ml.cli, fraud_ml.payment_demo, sys; "
+             "assert not any(m in sys.modules for m in "
+             "('fraud_ml.data','fraud_ml.training','fraud_ml.experiment','torch'))"],
+            capture_output=True, text=True, check=False, timeout=10,
+        )
+>       assert completed.returncode == 0, completed.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 1, in <module>
+E         AssertionError
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/william/Documents/Projet 3/.venv/bin/python', '-c', "import fraud_ml.cli, fraud_ml.paym...de=1, stdout='', stderr='Traceback (most recent call last):\n  File "<string>", line 1, in <module>\nAssertionError\n').returncode
+
+tests/integration/test_demo_cli.py:143: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_demo_cli.py::test_cli_real_http_minimal_payload_safe_output_and_no_environment_proxy
+FAILED tests/integration/test_demo_cli.py::test_cli_missing_token_is_safe_and_performs_no_http
+FAILED tests/integration/test_demo_cli.py::test_cli_authentication_error_abstains_without_body_or_token_echo
+FAILED tests/integration/test_demo_cli.py::test_demo_import_does_not_load_training_or_generator
+4 failed in 10.74s

@@ -1,0 +1,10 @@
+{
+  "payment_id": "6710471a-c545-4390-a346-200827d86d0c",
+  "score": 0.011041127797303131,
+  "recommendation": "low_synthetic_risk",
+  "model_version": "f7adeda45315d194650515fcea43bf8e71732a5a582d0cb2e8778db2746a17f2",
+  "feature_schema_version": "synthetic-risk-v1",
+  "experimental": true,
+  "training_data": "synthetic",
+  "notice": "Score expérimental issu de données synthétiques ; aucune validation de fraude réelle ; aucun effet sur le paiement."
+}

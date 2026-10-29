@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fraud API Integration"
+  short_description: "Strict inference API and read-only payment demo"
+  default_prompt: "Use $fraud-api-integration for the requested Fraud ML task within the authorized milestone."
+policy:
+  allow_implicit_invocation: true

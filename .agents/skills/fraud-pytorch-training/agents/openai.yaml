@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fraud PyTorch Training"
+  short_description: "CPU MLP training and checkpoint correctness"
+  default_prompt: "Use $fraud-pytorch-training for the requested Fraud ML task within the authorized milestone."
+policy:
+  allow_implicit_invocation: true

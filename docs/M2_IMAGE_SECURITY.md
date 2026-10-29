@@ -56,3 +56,5 @@ uv run --frozen python scripts/image_policy.py \
 ```
 
 The scanner receives the Docker socket; run only the trusted pinned scanner locally/inside disposable CI. The API container never receives that socket. On this host, use `DOCKER_CONTEXT=colima-fraud-ml` and docker-compose for the dedicated engine, and bind its actual socket for the scanner. Image IDs differ by architecture/build; compare each report with its own running container, not with this arm64 evidence ID.
+
+M3 extends the reviewed source scope to the separate HTTP CLI and moves the already locked HTTP client to runtime. The independent source review, unchanged exception expiry and fresh image/runtime evidence are tracked in [M3 verification](M3_VERIFICATION.md) and [M3 review](../reviews/M3-review.md). This historical M2 scan is not reused as a fresh M3 scan.

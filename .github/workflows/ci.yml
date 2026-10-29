@@ -1,0 +1,38 @@
+name: M1 verification
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MPLCONFIGDIR: ${{ github.workspace }}/.local/matplotlib
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install locked environment
+        run: |
+          python -m pip install uv==0.12.23
+          uv lock --check --offline
+          uv sync --frozen
+      - name: Lint, format and strict types
+        run: |
+          uv run --frozen ruff check .
+          uv run --frozen ruff format --check .
+          uv run --frozen pyright
+      - name: Full regression including tiny real model training and artifacts
+        run: uv run --frozen pytest --junitxml=.local/tests.xml
+      - name: Security checks against installed versions (no resolution or upgrades)
+        run: |
+          uv run --frozen bandit -r src
+          uv run --frozen python - <<'PY'
+          from importlib.metadata import distributions
+          from pathlib import Path
+          lines = sorted({f'{d.metadata["Name"]}=={d.version}' for d in distributions()
+                          if d.metadata['Name'] != 'fraud-ml'})
+          Path('.local/installed.txt').write_text('\n'.join(lines) + '\n')
+          PY
+          uv run --frozen pip-audit --disable-pip --no-deps --strict -r .local/installed.txt

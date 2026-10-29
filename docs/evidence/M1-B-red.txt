@@ -1,0 +1,157 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+____ test_training_updates_weights_and_saved_checkpoint_is_not_a_live_alias ____
+
+    def test_training_updates_weights_and_saved_checkpoint_is_not_a_live_alias() -> None:
+        x, y = fixture()
+        torch.manual_seed(44)
+        initial = copy.deepcopy(MLP().state_dict())
+>       result = train_torch(x, y, x, y, TrainingConfig(epochs=8, patience=5))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_learning.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+train_x = array([[-0.65179115, -0.17471729,  1.66372399,  0.65914775],
+       [-1.64139729, -0.00520326, -0.62346374,  0.1486315...7894575,  0.66448988,  0.7608802 ],
+       [ 0.02154808,  0.39933362, -0.78162493, -0.59024503]],
+      shape=(256, 4))
+train_y = array([0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,...    0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0,
+       0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1])
+val_x = array([[-0.65179115, -0.17471729,  1.66372399,  0.65914775],
+       [-1.64139729, -0.00520326, -0.62346374,  0.1486315...7894575,  0.66448988,  0.7608802 ],
+       [ 0.02154808,  0.39933362, -0.78162493, -0.59024503]],
+      shape=(256, 4))
+val_y = array([0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,...    0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0,
+       0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1])
+config = TrainingConfig(epochs=8, patience=5, batch_size=256, learning_rate=0.001, training_seed=44)
+
+    def train_torch(train_x: NDArray[np.float64], train_y: NDArray[np.int64], val_x: NDArray[np.float64], val_y: NDArray[np.int64], config: TrainingConfig = TrainingConfig()) -> TrainingResult:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/training.py:27: NotImplementedError
+____ test_prediction_is_finite_deterministic_and_does_not_update_parameters ____
+
+    def test_prediction_is_finite_deterministic_and_does_not_update_parameters() -> None:
+        x, y = fixture()
+        config = TrainingConfig(epochs=3)
+>       first = train_torch(x, y, x, y, config)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_learning.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+train_x = array([[-0.65179115, -0.17471729,  1.66372399,  0.65914775],
+       [-1.64139729, -0.00520326, -0.62346374,  0.1486315...7894575,  0.66448988,  0.7608802 ],
+       [ 0.02154808,  0.39933362, -0.78162493, -0.59024503]],
+      shape=(256, 4))
+train_y = array([0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,...    0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0,
+       0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1])
+val_x = array([[-0.65179115, -0.17471729,  1.66372399,  0.65914775],
+       [-1.64139729, -0.00520326, -0.62346374,  0.1486315...7894575,  0.66448988,  0.7608802 ],
+       [ 0.02154808,  0.39933362, -0.78162493, -0.59024503]],
+      shape=(256, 4))
+val_y = array([0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,...    0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0,
+       0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1])
+config = TrainingConfig(epochs=3, patience=5, batch_size=256, learning_rate=0.001, training_seed=44)
+
+    def train_torch(train_x: NDArray[np.float64], train_y: NDArray[np.int64], val_x: NDArray[np.float64], val_y: NDArray[np.int64], config: TrainingConfig = TrainingConfig()) -> TrainingResult:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/training.py:27: NotImplementedError
+____ test_loss_contract_rejects_broadcastable_targets_and_nonfinite_inputs _____
+
+    def test_loss_contract_rejects_broadcastable_targets_and_nonfinite_inputs() -> None:
+        x, y = fixture()
+        with pytest.raises(ValueError):
+>           train_torch(x, y.reshape(-1, 1), x, y, TrainingConfig(epochs=1))
+
+tests/unit/test_learning.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+train_x = array([[-0.65179115, -0.17471729,  1.66372399,  0.65914775],
+       [-1.64139729, -0.00520326, -0.62346374,  0.1486315...7894575,  0.66448988,  0.7608802 ],
+       [ 0.02154808,  0.39933362, -0.78162493, -0.59024503]],
+      shape=(256, 4))
+train_y = array([[0],
+       [0],
+       [0],
+       [1],
+       [0],
+       [0],
+       [1],
+       [1],
+       [0],
+       [1]...      [0],
+       [0],
+       [0],
+       [1],
+       [1],
+       [0],
+       [1],
+       [1],
+       [0],
+       [1]])
+val_x = array([[-0.65179115, -0.17471729,  1.66372399,  0.65914775],
+       [-1.64139729, -0.00520326, -0.62346374,  0.1486315...7894575,  0.66448988,  0.7608802 ],
+       [ 0.02154808,  0.39933362, -0.78162493, -0.59024503]],
+      shape=(256, 4))
+val_y = array([0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0,...    0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0,
+       0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1])
+config = TrainingConfig(epochs=1, patience=5, batch_size=256, learning_rate=0.001, training_seed=44)
+
+    def train_torch(train_x: NDArray[np.float64], train_y: NDArray[np.int64], val_x: NDArray[np.float64], val_y: NDArray[np.int64], config: TrainingConfig = TrainingConfig()) -> TrainingResult:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/training.py:27: NotImplementedError
+______________________ test_known_metrics_and_thresholds _______________________
+
+    def test_known_metrics_and_thresholds() -> None:
+        y = np.array([0, 0, 1, 1], dtype=np.int64)
+        p = np.array([.1, .2, .8, .9])
+>       m = metrics(y, p, .5)
+            ^^^^^^^^^^^^^^^^^
+
+tests/unit/test_learning.py:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+labels = array([0, 0, 1, 1]), scores = array([0.1, 0.2, 0.8, 0.9])
+threshold = 0.5
+
+    def metrics(labels: NDArray[np.int64], scores: NDArray[np.float64], threshold: float = .5) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/evaluation.py:13: NotImplementedError
+_______ test_undefined_metrics_are_explicit_and_invalid_scores_rejected ________
+
+    def test_undefined_metrics_are_explicit_and_invalid_scores_rejected() -> None:
+        y = np.array([0, 0], dtype=np.int64)
+>       m = metrics(y, np.array([.1, .2]), .5)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_learning.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+labels = array([0, 0]), scores = array([0.1, 0.2]), threshold = 0.5
+
+    def metrics(labels: NDArray[np.int64], scores: NDArray[np.float64], threshold: float = .5) -> dict[str, object]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/evaluation.py:13: NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/unit/test_learning.py::test_training_updates_weights_and_saved_checkpoint_is_not_a_live_alias
+FAILED tests/unit/test_learning.py::test_prediction_is_finite_deterministic_and_does_not_update_parameters
+FAILED tests/unit/test_learning.py::test_loss_contract_rejects_broadcastable_targets_and_nonfinite_inputs
+FAILED tests/unit/test_learning.py::test_known_metrics_and_thresholds - NotIm...
+FAILED tests/unit/test_learning.py::test_undefined_metrics_are_explicit_and_invalid_scores_rejected
+5 failed in 8.36s

@@ -1,0 +1,29 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______________ test_export_must_match_in_memory_torch_candidate _______________
+
+tmp_path = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-3/test_export_must_match_in_memo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x116da68a0>
+
+    @pytest.mark.integration
+    def test_export_must_match_in_memory_torch_candidate(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import torch
+    
+        from fraud_ml.networks import MLP
+    
+        def wrong_checkpoint(*args: object, **kwargs: object) -> dict[str, torch.Tensor]:
+            return {k: torch.zeros_like(v) for k, v in MLP().state_dict().items()}
+    
+        data = tmp_path / "data"
+        generate_experiment(data, ExperimentConfig(samples=6000, minimum_positives=10, epochs=2))
+        monkeypatch.setattr(torch, "load", wrong_checkpoint)
+>       with pytest.raises(ValueError, match="parity"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/integration/test_experiment.py:91: Failed
+=========================== short test summary info ============================
+FAILED tests/integration/test_experiment.py::test_export_must_match_in_memory_torch_candidate
+1 failed in 2.95s

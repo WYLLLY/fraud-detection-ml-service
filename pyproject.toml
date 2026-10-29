@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fraud-ml"
+version = "0.1.0"
+description = "Reproducible synthetic-risk learning experiment"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "numpy>=2.2,<3", "pandas>=2.2,<3", "scikit-learn>=1.7,<2",
+  "torch>=2.8,<3", "matplotlib>=3.10,<4", "joblib>=1.5,<2",
+]
+
+[project.scripts]
+fraud-ml = "fraud_ml.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.4,<10", "ruff>=0.12,<1", "pyright[nodejs]>=1.1.400,<2", "pip-audit>=2.9,<3", "bandit>=1.8,<2", "pandas-stubs>=2.2,<4"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fraud_ml"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = [".venv", ".local"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = ["src", "tests"]
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+markers = ["integration: real training and artifact/CLI round trips"]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

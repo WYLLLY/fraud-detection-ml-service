@@ -33,3 +33,7 @@ ruff format --check .
 Final reviewer verdict: **APPROVE for the corrected implementation scope; all three findings resolved; no remaining significant finding identified.** The reviewer confirmed train-only preprocessing, validation-only selection, copied best checkpoints, closed input schema, trusted artifact validation, inference code without generator imports and no financial execution path. Responsibilities and the Scorer protocol were judged proportionate to this small project.
 
 The approval is scoped to reviewed code and corrections. The full experiment, final strict types/security/regression and durable results are primary-agent evidence documented in `docs/M1_VERIFICATION.md`, not independently executed by the reviewer. No remote CI result is claimed.
+
+## Linux CI advisory inventory correction
+
+Independent follow-up verdict: **APPROVE**. The five-case Red evidence was inspected; the reviewer ran the five new tests (5 passed), targeted Ruff/format, and the inventory script (66 installed package records on macOS, no version mapping needed there). The reviewer verified uv.lock's official Linux CPU source and that only torch's exact +cpu suffix maps to the public advisory version. Strict audit remains active with no ignored advisory, package upgrade or hidden omission. Linux audit completion is established separately by GitHub CI, not this review.

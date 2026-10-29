@@ -67,3 +67,11 @@ No numeric quality target or MLP victory was invented. The generator reference i
 The second complete training run checked reproducibility on validation only and did not reselect a model on final test. Current source/lock identities match the original trained-run provenance. Joblib is limited to trusted local release artifacts; file hashes are not publisher authentication. No real-fraud efficacy, production readiness, cross-platform bitwise reproducibility or remote CI success is claimed by local results.
 
 Projet 1's status remains unchanged, including its pre-existing untracked review document. No M2/M3 feature, payment call, migration or financial write was performed in M1.
+
+## Publication and Linux CI follow-up
+
+Private repository: https://github.com/WYLLLY/fraud-detection-ml-service ; PR #1. The first Linux push/PR checks passed quality/regression/Bandit but failed advisory lookup for official torch 2.15.0+cpu, which is absent from PyPI's release metadata. This was an audit lookup error, not a product failure or ignored vulnerability.
+
+`scripts/audit_environment.py` now records both the exact installed version and advisory version, mapping only torch's official +cpu build suffix to the upstream public release. All distributions remain in the audit inventory (except the local editable application); no advisory is suppressed. Custom suffixes and other package versions remain unchanged and therefore fail strict audit if unavailable.
+
+Cycle F: five pre-fix behavioral failures in M1-F-red.txt; full regression after correction: **31 passed, 0 failures/errors/skips** (M1-F-green.txt). Strict Pyright includes scripts, and workflow Bandit also scans scripts. Remote rerun is pending at this evidence snapshot; merge requires green checks and independent review.

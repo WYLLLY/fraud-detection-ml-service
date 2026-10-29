@@ -27,12 +27,6 @@ jobs:
         run: uv run --frozen pytest --junitxml=.local/tests.xml
       - name: Security checks against installed versions (no resolution or upgrades)
         run: |
-          uv run --frozen bandit -r src
-          uv run --frozen python - <<'PY'
-          from importlib.metadata import distributions
-          from pathlib import Path
-          lines = sorted({f'{d.metadata["Name"]}=={d.version}' for d in distributions()
-                          if d.metadata['Name'] != 'fraud-ml'})
-          Path('.local/installed.txt').write_text('\n'.join(lines) + '\n')
-          PY
+          uv run --frozen bandit -r src scripts
+          uv run --frozen python scripts/audit_environment.py --output .local/installed.txt
           uv run --frozen pip-audit --disable-pip --no-deps --strict -r .local/installed.txt

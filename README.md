@@ -41,7 +41,7 @@ uv run --frozen pytest
 uv run --frozen bandit -r src
 ```
 
-The CI audits an exact inventory of installed versions through `pip-audit --no-deps --disable-pip --strict`. The local editable `fraud-ml` project is excluded from advisory lookup, not from source review. No automatic upgrade/fix or advisory suppression is used. Small integration fixtures test actual training/export/CLI behavior, not benchmark efficacy.
+The CI audits an exact inventory of installed versions through `pip-audit --no-deps --disable-pip --strict`. The inventory records exact installed builds; official Linux torch +cpu is looked up against its public upstream version, with no advisory suppression. The local editable `fraud-ml` project is excluded from advisory lookup, not from source review. No automatic upgrade/fix or advisory suppression is used. Small integration fixtures test actual training/export/CLI behavior, not benchmark efficacy.
 
 Only load bundles produced by this project in a trusted local directory. Joblib may execute code. File digests verify a trusted manifest's integrity, not an untrusted publisher's authenticity. Bundles have no upload/download endpoint. Oracle references and raw data are excluded from deployed bundles; no Payment credentials or SQL access exist in M1.
 

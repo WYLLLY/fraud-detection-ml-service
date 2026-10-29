@@ -1,0 +1,44 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+________________ test_all_positive_average_precision_is_defined ________________
+
+    def test_all_positive_average_precision_is_defined() -> None:
+        result = metrics(np.array([1, 1], dtype=np.int64), np.array([.2, .8]))
+>       assert result['ap'] == 1.
+E       assert None == 1.0
+
+tests/unit/test_learning.py:89: AssertionError
+___________ test_real_training_freeze_evaluation_and_trusted_reload ____________
+
+tmp_path = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-5/test_real_training_freeze_eval0')
+
+    @pytest.mark.integration
+    def test_real_training_freeze_evaluation_and_trusted_reload(tmp_path: Path) -> None:
+        data, run, reports = (tmp_path / n for n in ("data", "run", "reports"))
+        generate_experiment(data, ExperimentConfig(samples=6000, minimum_positives=10, epochs=3))
+        parts = json.loads((data / "partitions.json").read_text())
+        assert len(parts["test"]) == 900
+        assert "probability" not in (data / "observations.csv").read_text().splitlines()[0]
+        train_experiment(data, run)
+        frozen = (run / "decision.json").read_bytes()
+        report = evaluate_experiment(data, run, reports)
+        assert isinstance(report["candidates"], dict)
+        assert set(cast(dict[str, object], report["candidates"])) == {
+            "logistic",
+            "torch",
+            "prior",
+            "generator",
+        }
+>       support = cast(dict[str, dict[str, int | float]], report["partition_support"])
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'partition_support'
+
+tests/integration/test_experiment.py:36: KeyError
+------------------------------ Captured log call -------------------------------
+WARNING  matplotlib:__init__.py:573 mkdir -p failed for path /Users/william/.matplotlib: [Errno 1] Operation not permitted: '/Users/william/.matplotlib'
+WARNING  matplotlib:__init__.py:596 Matplotlib created a temporary cache directory at /var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/matplotlib-8fzkzw78 because there was an issue with the default path (/Users/william/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+WARNING  matplotlib.font_manager:font_manager.py:1249 Matplotlib is building the font cache; this may take a moment.
+=========================== short test summary info ============================
+FAILED tests/unit/test_learning.py::test_all_positive_average_precision_is_defined
+FAILED tests/integration/test_experiment.py::test_real_training_freeze_evaluation_and_trusted_reload
+2 failed in 21.25s

@@ -1,0 +1,11 @@
+{
+  "samples": 60000,
+  "generation_seed": 42,
+  "split_seed": 43,
+  "training_seed": 44,
+  "epochs": 50,
+  "patience": 5,
+  "batch_size": 256,
+  "learning_rate": 0.001,
+  "minimum_positives": 50
+}

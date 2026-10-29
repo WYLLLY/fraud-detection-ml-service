@@ -1,0 +1,6 @@
+   Building fraud-ml @ file:///Users/william/Documents/Projet%203
+      Built fraud-ml @ file:///Users/william/Documents/Projet%203
+Uninstalled 1 package in 1ms
+Installed 1 package in 1ms
+...............................                                          [100%]
+31 passed in 7.72s

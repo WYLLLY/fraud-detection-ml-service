@@ -1,0 +1,134 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+_ test_only_official_cpu_torch_build_maps_to_public_release[torch-2.15.0+cpu-2.15.0] _
+
+name = 'torch', installed = '2.15.0+cpu', expected = '2.15.0'
+
+    @pytest.mark.parametrize(('name', 'installed', 'expected'), [
+        ('torch', '2.15.0+cpu', '2.15.0'),
+        ('torch', '2.15.0', '2.15.0'),
+        ('numpy', '2.5.4', '2.5.4'),
+        ('other', '1.0+cpu', '1.0+cpu'),
+        ('torch', '2.15.0+custom', '2.15.0+custom'),
+    ])
+    def test_only_official_cpu_torch_build_maps_to_public_release(name: str, installed: str, expected: str) -> None:
+>       assert advisory_version(name, installed) == expected
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_audit_inventory.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'torch', version = '2.15.0+cpu'
+
+    def advisory_version(name: str, version: str) -> str:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/audit_environment.py:5: NotImplementedError
+_ test_only_official_cpu_torch_build_maps_to_public_release[torch-2.15.0-2.15.0] _
+
+name = 'torch', installed = '2.15.0', expected = '2.15.0'
+
+    @pytest.mark.parametrize(('name', 'installed', 'expected'), [
+        ('torch', '2.15.0+cpu', '2.15.0'),
+        ('torch', '2.15.0', '2.15.0'),
+        ('numpy', '2.5.4', '2.5.4'),
+        ('other', '1.0+cpu', '1.0+cpu'),
+        ('torch', '2.15.0+custom', '2.15.0+custom'),
+    ])
+    def test_only_official_cpu_torch_build_maps_to_public_release(name: str, installed: str, expected: str) -> None:
+>       assert advisory_version(name, installed) == expected
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_audit_inventory.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'torch', version = '2.15.0'
+
+    def advisory_version(name: str, version: str) -> str:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/audit_environment.py:5: NotImplementedError
+_ test_only_official_cpu_torch_build_maps_to_public_release[numpy-2.5.4-2.5.4] _
+
+name = 'numpy', installed = '2.5.4', expected = '2.5.4'
+
+    @pytest.mark.parametrize(('name', 'installed', 'expected'), [
+        ('torch', '2.15.0+cpu', '2.15.0'),
+        ('torch', '2.15.0', '2.15.0'),
+        ('numpy', '2.5.4', '2.5.4'),
+        ('other', '1.0+cpu', '1.0+cpu'),
+        ('torch', '2.15.0+custom', '2.15.0+custom'),
+    ])
+    def test_only_official_cpu_torch_build_maps_to_public_release(name: str, installed: str, expected: str) -> None:
+>       assert advisory_version(name, installed) == expected
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_audit_inventory.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'numpy', version = '2.5.4'
+
+    def advisory_version(name: str, version: str) -> str:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/audit_environment.py:5: NotImplementedError
+_ test_only_official_cpu_torch_build_maps_to_public_release[other-1.0+cpu-1.0+cpu] _
+
+name = 'other', installed = '1.0+cpu', expected = '1.0+cpu'
+
+    @pytest.mark.parametrize(('name', 'installed', 'expected'), [
+        ('torch', '2.15.0+cpu', '2.15.0'),
+        ('torch', '2.15.0', '2.15.0'),
+        ('numpy', '2.5.4', '2.5.4'),
+        ('other', '1.0+cpu', '1.0+cpu'),
+        ('torch', '2.15.0+custom', '2.15.0+custom'),
+    ])
+    def test_only_official_cpu_torch_build_maps_to_public_release(name: str, installed: str, expected: str) -> None:
+>       assert advisory_version(name, installed) == expected
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_audit_inventory.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'other', version = '1.0+cpu'
+
+    def advisory_version(name: str, version: str) -> str:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/audit_environment.py:5: NotImplementedError
+_ test_only_official_cpu_torch_build_maps_to_public_release[torch-2.15.0+custom-2.15.0+custom] _
+
+name = 'torch', installed = '2.15.0+custom', expected = '2.15.0+custom'
+
+    @pytest.mark.parametrize(('name', 'installed', 'expected'), [
+        ('torch', '2.15.0+cpu', '2.15.0'),
+        ('torch', '2.15.0', '2.15.0'),
+        ('numpy', '2.5.4', '2.5.4'),
+        ('other', '1.0+cpu', '1.0+cpu'),
+        ('torch', '2.15.0+custom', '2.15.0+custom'),
+    ])
+    def test_only_official_cpu_torch_build_maps_to_public_release(name: str, installed: str, expected: str) -> None:
+>       assert advisory_version(name, installed) == expected
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_audit_inventory.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'torch', version = '2.15.0+custom'
+
+    def advisory_version(name: str, version: str) -> str:
+>       raise NotImplementedError
+E       NotImplementedError
+
+scripts/audit_environment.py:5: NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/unit/test_audit_inventory.py::test_only_official_cpu_torch_build_maps_to_public_release[torch-2.15.0+cpu-2.15.0]
+FAILED tests/unit/test_audit_inventory.py::test_only_official_cpu_torch_build_maps_to_public_release[torch-2.15.0-2.15.0]
+FAILED tests/unit/test_audit_inventory.py::test_only_official_cpu_torch_build_maps_to_public_release[numpy-2.5.4-2.5.4]
+FAILED tests/unit/test_audit_inventory.py::test_only_official_cpu_torch_build_maps_to_public_release[other-1.0+cpu-1.0+cpu]
+FAILED tests/unit/test_audit_inventory.py::test_only_official_cpu_torch_build_maps_to_public_release[torch-2.15.0+custom-2.15.0+custom]
+5 failed in 0.03s

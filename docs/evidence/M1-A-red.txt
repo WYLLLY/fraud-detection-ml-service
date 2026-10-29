@@ -1,0 +1,316 @@
+FFFFFFFFFFFFFFFF                                                         [100%]
+=================================== FAILURES ===================================
+___________ test_generator_is_seeded_bounded_and_oracle_is_separate ____________
+
+    def test_generator_is_seeded_bounded_and_oracle_is_separate() -> None:
+        data = generate(6000)
+>       assert len(data.observations) == 6000
+E       assert 0 == 6000
+E        +  where 0 = len(())
+E        +    where () = GeneratedData(observations=(), probabilities=()).observations
+
+tests/unit/test_data.py:10: AssertionError
+____________ test_probability_is_the_documented_bernoulli_parameter ____________
+
+    def test_probability_is_the_documented_bernoulli_parameter() -> None:
+        for currency, scale in SCALES.items():
+            for amount in (scale, scale * 10):
+                x = math.log(amount / scale)
+                expected = .01 + .15 / (1 + math.exp(-2 * (x - 1.5))) + .04 * math.exp(-.5 * ((x-.2)/.35)**2)
+>               assert probability(amount, currency) == pytest.approx(expected)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_data.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+amount = 10000, currency = 'EUR'
+
+    def probability(amount: int, currency: str) -> float:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:28: NotImplementedError
+___________________ test_invalid_amount_is_not_coerced[True] ___________________
+
+bad = True
+
+    @pytest.mark.parametrize('bad', [True, 1.0, '1000', 0, -1, 10**13, None])
+    def test_invalid_amount_is_not_coerced(bad: object) -> None:
+        with pytest.raises(ValueError):
+>           validate_features({'amount_minor': bad, 'currency': 'EUR'})
+
+tests/unit/test_data.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': True, 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+___________________ test_invalid_amount_is_not_coerced[1.0] ____________________
+
+bad = 1.0
+
+    @pytest.mark.parametrize('bad', [True, 1.0, '1000', 0, -1, 10**13, None])
+    def test_invalid_amount_is_not_coerced(bad: object) -> None:
+        with pytest.raises(ValueError):
+>           validate_features({'amount_minor': bad, 'currency': 'EUR'})
+
+tests/unit/test_data.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': 1.0, 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+___________________ test_invalid_amount_is_not_coerced[1000] ___________________
+
+bad = '1000'
+
+    @pytest.mark.parametrize('bad', [True, 1.0, '1000', 0, -1, 10**13, None])
+    def test_invalid_amount_is_not_coerced(bad: object) -> None:
+        with pytest.raises(ValueError):
+>           validate_features({'amount_minor': bad, 'currency': 'EUR'})
+
+tests/unit/test_data.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': '1000', 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+____________________ test_invalid_amount_is_not_coerced[0] _____________________
+
+bad = 0
+
+    @pytest.mark.parametrize('bad', [True, 1.0, '1000', 0, -1, 10**13, None])
+    def test_invalid_amount_is_not_coerced(bad: object) -> None:
+        with pytest.raises(ValueError):
+>           validate_features({'amount_minor': bad, 'currency': 'EUR'})
+
+tests/unit/test_data.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': 0, 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+____________________ test_invalid_amount_is_not_coerced[-1] ____________________
+
+bad = -1
+
+    @pytest.mark.parametrize('bad', [True, 1.0, '1000', 0, -1, 10**13, None])
+    def test_invalid_amount_is_not_coerced(bad: object) -> None:
+        with pytest.raises(ValueError):
+>           validate_features({'amount_minor': bad, 'currency': 'EUR'})
+
+tests/unit/test_data.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': -1, 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+______________ test_invalid_amount_is_not_coerced[10000000000000] ______________
+
+bad = 10000000000000
+
+    @pytest.mark.parametrize('bad', [True, 1.0, '1000', 0, -1, 10**13, None])
+    def test_invalid_amount_is_not_coerced(bad: object) -> None:
+        with pytest.raises(ValueError):
+>           validate_features({'amount_minor': bad, 'currency': 'EUR'})
+
+tests/unit/test_data.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': 10000000000000, 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+___________________ test_invalid_amount_is_not_coerced[None] ___________________
+
+bad = None
+
+    @pytest.mark.parametrize('bad', [True, 1.0, '1000', 0, -1, 10**13, None])
+    def test_invalid_amount_is_not_coerced(bad: object) -> None:
+        with pytest.raises(ValueError):
+>           validate_features({'amount_minor': bad, 'currency': 'EUR'})
+
+tests/unit/test_data.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': None, 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+___________________ test_leakage_columns_are_rejected[label] ___________________
+
+extra = 'label'
+
+    @pytest.mark.parametrize('extra', ['label', 'p', 'row_id', 'state'])
+    def test_leakage_columns_are_rejected(extra: str) -> None:
+        with pytest.raises(ValueError):
+>           Preprocessor().fit([{'amount_minor': 1000, 'currency': 'EUR', extra: 1}])
+
+tests/unit/test_data.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fraud_ml.features.Preprocessor object at 0x1097a6810>
+rows = [{'amount_minor': 1000, 'currency': 'EUR', 'label': 1}]
+
+    def fit(self, rows: Sequence[Mapping[str, object]]) -> 'Preprocessor':
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/features.py:8: NotImplementedError
+_____________________ test_leakage_columns_are_rejected[p] _____________________
+
+extra = 'p'
+
+    @pytest.mark.parametrize('extra', ['label', 'p', 'row_id', 'state'])
+    def test_leakage_columns_are_rejected(extra: str) -> None:
+        with pytest.raises(ValueError):
+>           Preprocessor().fit([{'amount_minor': 1000, 'currency': 'EUR', extra: 1}])
+
+tests/unit/test_data.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fraud_ml.features.Preprocessor object at 0x1096da7b0>
+rows = [{'amount_minor': 1000, 'currency': 'EUR', 'p': 1}]
+
+    def fit(self, rows: Sequence[Mapping[str, object]]) -> 'Preprocessor':
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/features.py:8: NotImplementedError
+__________________ test_leakage_columns_are_rejected[row_id] ___________________
+
+extra = 'row_id'
+
+    @pytest.mark.parametrize('extra', ['label', 'p', 'row_id', 'state'])
+    def test_leakage_columns_are_rejected(extra: str) -> None:
+        with pytest.raises(ValueError):
+>           Preprocessor().fit([{'amount_minor': 1000, 'currency': 'EUR', extra: 1}])
+
+tests/unit/test_data.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fraud_ml.features.Preprocessor object at 0x10971bb00>
+rows = [{'amount_minor': 1000, 'currency': 'EUR', 'row_id': 1}]
+
+    def fit(self, rows: Sequence[Mapping[str, object]]) -> 'Preprocessor':
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/features.py:8: NotImplementedError
+___________________ test_leakage_columns_are_rejected[state] ___________________
+
+extra = 'state'
+
+    @pytest.mark.parametrize('extra', ['label', 'p', 'row_id', 'state'])
+    def test_leakage_columns_are_rejected(extra: str) -> None:
+        with pytest.raises(ValueError):
+>           Preprocessor().fit([{'amount_minor': 1000, 'currency': 'EUR', extra: 1}])
+
+tests/unit/test_data.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fraud_ml.features.Preprocessor object at 0x10971b530>
+rows = [{'amount_minor': 1000, 'currency': 'EUR', 'state': 1}]
+
+    def fit(self, rows: Sequence[Mapping[str, object]]) -> 'Preprocessor':
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/features.py:8: NotImplementedError
+___________________ test_currency_domains_and_strict_schema ____________________
+
+    def test_currency_domains_and_strict_schema() -> None:
+        for currency, scale in SCALES.items():
+>           assert validate_features({'amount_minor': int(scale * .05), 'currency': currency}) == (int(scale * .05), currency)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_data.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+features = {'amount_minor': 500, 'currency': 'EUR'}
+
+    def validate_features(features: Mapping[str, object]) -> tuple[int, str]:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:31: NotImplementedError
+____________ test_splits_are_frozen_disjoint_and_preserve_every_row ____________
+
+    def test_splits_are_frozen_disjoint_and_preserve_every_row() -> None:
+        rows = generate(6000).observations
+>       parts = split(rows, minimum_positives=10)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_data.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+observations = (), seed = 43, minimum_positives = 10
+
+    def split(observations: Sequence[Observation], seed: int = 43, minimum_positives: int = 50) -> Partitions:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/data.py:37: NotImplementedError
+____ test_preprocessing_is_train_only_four_columns_and_fixed_currency_order ____
+
+    def test_preprocessing_is_train_only_four_columns_and_fixed_currency_order() -> None:
+        train = [{'amount_minor': 1000, 'currency': 'EUR'}, {'amount_minor': 10000, 'currency': 'USD'}]
+        held_out = [{'amount_minor': 750000, 'currency': 'JPY'}]
+>       transform = Preprocessor().fit(train)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_data.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fraud_ml.features.Preprocessor object at 0x1097a5160>
+rows = [{'amount_minor': 1000, 'currency': 'EUR'}, {'amount_minor': 10000, 'currency': 'USD'}]
+
+    def fit(self, rows: Sequence[Mapping[str, object]]) -> 'Preprocessor':
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/features.py:8: NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/unit/test_data.py::test_generator_is_seeded_bounded_and_oracle_is_separate
+FAILED tests/unit/test_data.py::test_probability_is_the_documented_bernoulli_parameter
+FAILED tests/unit/test_data.py::test_invalid_amount_is_not_coerced[True] - No...
+FAILED tests/unit/test_data.py::test_invalid_amount_is_not_coerced[1.0] - Not...
+FAILED tests/unit/test_data.py::test_invalid_amount_is_not_coerced[1000] - No...
+FAILED tests/unit/test_data.py::test_invalid_amount_is_not_coerced[0] - NotIm...
+FAILED tests/unit/test_data.py::test_invalid_amount_is_not_coerced[-1] - NotI...
+FAILED tests/unit/test_data.py::test_invalid_amount_is_not_coerced[10000000000000]
+FAILED tests/unit/test_data.py::test_invalid_amount_is_not_coerced[None] - No...
+FAILED tests/unit/test_data.py::test_leakage_columns_are_rejected[label] - No...
+FAILED tests/unit/test_data.py::test_leakage_columns_are_rejected[p] - NotImp...
+FAILED tests/unit/test_data.py::test_leakage_columns_are_rejected[row_id] - N...
+FAILED tests/unit/test_data.py::test_leakage_columns_are_rejected[state] - No...
+FAILED tests/unit/test_data.py::test_currency_domains_and_strict_schema - Not...
+FAILED tests/unit/test_data.py::test_splits_are_frozen_disjoint_and_preserve_every_row
+FAILED tests/unit/test_data.py::test_preprocessing_is_train_only_four_columns_and_fixed_currency_order
+16 failed in 0.45s

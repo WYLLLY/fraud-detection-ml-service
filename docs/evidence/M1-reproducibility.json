@@ -1,0 +1,9 @@
+{
+  "selected": "logistic",
+  "same_thresholds": true,
+  "same_torch_validation_history": true,
+  "max_abs_prediction_error": 0.0,
+  "rows": 9000,
+  "partition": "validation",
+  "test_reselected": false
+}

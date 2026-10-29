@@ -1,0 +1,62 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+___________ test_real_training_freeze_evaluation_and_trusted_reload ____________
+
+tmp_path = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-0/test_real_training_freeze_eval0')
+
+    @pytest.mark.integration
+    def test_real_training_freeze_evaluation_and_trusted_reload(tmp_path: Path) -> None:
+        data, run, reports = (tmp_path / n for n in ('data', 'run', 'reports'))
+>       generate_experiment(data, ExperimentConfig(samples=6000, minimum_positives=10, epochs=3))
+
+tests/integration/test_experiment.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-0/test_real_training_freeze_eval0/data')
+config = ExperimentConfig(samples=6000, generation_seed=42, split_seed=43, training_seed=44, epochs=3, patience=5, batch_size=256, learning_rate=0.001, minimum_positives=10)
+
+    def generate_experiment(directory: Path, config: ExperimentConfig) -> None:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/experiment.py:22: NotImplementedError
+________________ test_generate_cli_and_no_accidental_overwrite _________________
+
+tmp_path = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-0/test_generate_cli_and_no_accid0')
+
+    @pytest.mark.integration
+    def test_generate_cli_and_no_accidental_overwrite(tmp_path: Path) -> None:
+        config = tmp_path/'config.json'
+        config.write_text(json.dumps({'samples': 6000, 'minimum_positives': 10, 'epochs': 1}))
+        cmd = [sys.executable, '-m', 'fraud_ml', 'generate', '--config', str(config), '--data-dir', str(tmp_path/'data')]
+        first = subprocess.run(cmd, text=True, capture_output=True, check=False)
+>       assert first.returncode == 0, first.stderr
+E       AssertionError: 
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/william/Documents/Projet 3/.venv/bin/python', '-m', 'fraud_ml', 'generate', '--config',...fcpb9mhm0000gp/T/pytest-of-william/pytest-0/test_generate_cli_and_no_accid0/data'], returncode=1, stdout='', stderr='').returncode
+
+tests/integration/test_experiment.py:40: AssertionError
+______________ test_bundle_requires_trusted_well_formed_manifest _______________
+
+tmp_path = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-0/test_bundle_requires_trusted_w0')
+
+    def test_bundle_requires_trusted_well_formed_manifest(tmp_path: Path) -> None:
+        (tmp_path/'manifest.json').write_text(json.dumps({'files': {'../escape.joblib': 'x'}}))
+        with pytest.raises(ValueError):
+>           load_bundle(tmp_path)
+
+tests/integration/test_experiment.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-0/test_bundle_requires_trusted_w0')
+
+    def load_bundle(directory: Path) -> Bundle:
+>       raise NotImplementedError
+E       NotImplementedError
+
+src/fraud_ml/bundle.py:14: NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/integration/test_experiment.py::test_real_training_freeze_evaluation_and_trusted_reload
+FAILED tests/integration/test_experiment.py::test_generate_cli_and_no_accidental_overwrite
+FAILED tests/integration/test_experiment.py::test_bundle_requires_trusted_well_formed_manifest
+3 failed in 0.88s

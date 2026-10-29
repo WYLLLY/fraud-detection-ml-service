@@ -1,6 +1,6 @@
 # Fraud ML — synthetic-risk experiment
 
-An independent Python portfolio project comparing logistic regression and a CPU PyTorch MLP on explicitly synthetic risk labels. **M1 implements data, training, evaluation and artifact round trips.** FastAPI (M2) and the read-only Payment demo (M3) are not implemented.
+An independent Python portfolio project comparing logistic regression and a CPU PyTorch MLP on explicitly synthetic risk labels. **M1 implements data, training, evaluation and artifact round trips; M2 serves the trusted model through local FastAPI and Docker.** The read-only Payment demo (M3) is not implemented.
 
 No result here demonstrates real fraud detection. The generator's probability is an evaluation-only reference; it is never a model input or a served predictor. Existing Payment records have no known synthetic label.
 
@@ -48,3 +48,34 @@ Only load bundles produced by this project in a trusted local directory. Joblib 
 The selected bundle includes immutable feature schema/order, domains, threshold, data/split/config/environment/source identities, validation metrics and model files. Its manifest digest excludes its own version field. Preserve the trusted bundle and locked environment together.
 
 See [M1 test matrix](docs/M1_TEST_MATRIX.md), [verification](docs/M1_VERIFICATION.md) and [actual experiment report](docs/results/M1/REPORT.md) for evidence and limitations. API, Docker runtime and real Payment integration belong to later milestones.
+
+## M2 local inference
+
+M2 provides `POST /score` and `GET /health`; M3's Payment demo remains unimplemented. Use the trusted M1 bundle produced above:
+
+```sh
+FRAUD_MODEL_DIR=artifacts/m1/bundle uv run --frozen uvicorn fraud_ml.api:create_app \
+  --factory --host 127.0.0.1 --port 8002 --workers 1 --no-access-log --no-proxy-headers
+```
+
+```sh
+curl --fail http://127.0.0.1:8002/health
+curl --fail http://127.0.0.1:8002/score -H 'Content-Type: application/json' \
+  --data '{"amount_minor":1000,"currency":"EUR"}'
+```
+
+The response contains a finite score, `low_synthetic_risk`/`elevated_synthetic_risk`, immutable model/schema versions and explicit synthetic/experimental markers. Scores at or above the saved threshold receive the elevated indicator. There is no authorization/rejection of payments.
+
+Invalid shape/types/currency/extras return 422. Valid financial amounts outside the synthetic training range return 422 with `outside_training_domain`. Missing/corrupt/incompatible artifacts stop startup. Backend failures return generic 500 `inference_failed`; a concurrent inference receives 503 `inference_busy`. No failure becomes zero risk. Request events log only route/status/duration/version/error code. Access logs are disabled to avoid raw URLs/query strings.
+
+Docker uses a versioned Python 3.12 slim base, current distribution security updates and the frozen Python lockfile. No data/model/secret is copied into the image. Run the trusted bundle read-only:
+
+```sh
+docker compose up --build --wait
+uv run --frozen python scripts/smoke_api.py --bundle artifacts/m1/bundle
+docker compose down
+```
+
+For this host's dedicated engine, prefix Compose commands with `DOCKER_CONTEXT=colima-fraud-ml`. The service publishes only loopback port 8002, runs UID 10001 with read-only root and model mount, drops capabilities and limits resources. Authentication is intentionally absent for this local-only MVP; broader network exposure requires a separate decision.
+
+See [M2 verification](docs/M2_VERIFICATION.md) and [independent review](reviews/M2-review.md). No training happens through HTTP or service startup.

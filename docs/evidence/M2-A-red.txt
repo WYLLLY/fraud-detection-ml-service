@@ -1,0 +1,306 @@
+FFFFFFFFFFFFFFFFF                                                        [100%]
+=================================== FAILURES ===================================
+___________ test_http_scores_evaluated_bundle_and_loads_it_only_once ___________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1156fd5b0>
+
+    def test_http_scores_evaluated_bundle_and_loads_it_only_once(trained_bundle: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        expected = load_bundle(trained_bundle)
+        calls: list[Path] = []
+        def tracked(path: Path) -> Bundle:
+            calls.append(path)
+            return load_bundle(path)
+        monkeypatch.setattr(api, 'load_bundle', tracked)
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.get('/health').status_code == 200
+E           AssertionError: assert 404 == 200
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = get('/health')
+E            +      where get = <starlette.testclient.TestClient object at 0x116243f20>.get
+
+tests/api/test_api.py:35: AssertionError
+_____________________ test_strict_amount_validation[True] ______________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+amount = True
+
+    @pytest.mark.parametrize('amount', [True, '1000', 1000., 0, -1, 10**12+1, None])
+    def test_strict_amount_validation(trained_bundle: Path, amount: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json={'amount_minor':amount,'currency':'EUR'}).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': True, 'currency': 'EUR'})
+E            +      where post = <starlette.testclient.TestClient object at 0x1130afc80>.post
+
+tests/api/test_api.py:52: AssertionError
+_____________________ test_strict_amount_validation[1000] ______________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+amount = '1000'
+
+    @pytest.mark.parametrize('amount', [True, '1000', 1000., 0, -1, 10**12+1, None])
+    def test_strict_amount_validation(trained_bundle: Path, amount: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json={'amount_minor':amount,'currency':'EUR'}).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': '1000', 'currency': 'EUR'})
+E            +      where post = <starlette.testclient.TestClient object at 0x113452240>.post
+
+tests/api/test_api.py:52: AssertionError
+____________________ test_strict_amount_validation[1000.0] _____________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+amount = 1000.0
+
+    @pytest.mark.parametrize('amount', [True, '1000', 1000., 0, -1, 10**12+1, None])
+    def test_strict_amount_validation(trained_bundle: Path, amount: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json={'amount_minor':amount,'currency':'EUR'}).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': 1000.0, 'currency': 'EUR'})
+E            +      where post = <starlette.testclient.TestClient object at 0x1134522a0>.post
+
+tests/api/test_api.py:52: AssertionError
+_______________________ test_strict_amount_validation[0] _______________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+amount = 0
+
+    @pytest.mark.parametrize('amount', [True, '1000', 1000., 0, -1, 10**12+1, None])
+    def test_strict_amount_validation(trained_bundle: Path, amount: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json={'amount_minor':amount,'currency':'EUR'}).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': 0, 'currency': 'EUR'})
+E            +      where post = <starlette.testclient.TestClient object at 0x1134518b0>.post
+
+tests/api/test_api.py:52: AssertionError
+______________________ test_strict_amount_validation[-1] _______________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+amount = -1
+
+    @pytest.mark.parametrize('amount', [True, '1000', 1000., 0, -1, 10**12+1, None])
+    def test_strict_amount_validation(trained_bundle: Path, amount: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json={'amount_minor':amount,'currency':'EUR'}).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': -1, 'currency': 'EUR'})
+E            +      where post = <starlette.testclient.TestClient object at 0x113455250>.post
+
+tests/api/test_api.py:52: AssertionError
+_________________ test_strict_amount_validation[1000000000001] _________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+amount = 1000000000001
+
+    @pytest.mark.parametrize('amount', [True, '1000', 1000., 0, -1, 10**12+1, None])
+    def test_strict_amount_validation(trained_bundle: Path, amount: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json={'amount_minor':amount,'currency':'EUR'}).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': 1000000000001, 'currency': 'EUR'})
+E            +      where post = <starlette.testclient.TestClient object at 0x1134540e0>.post
+
+tests/api/test_api.py:52: AssertionError
+_____________________ test_strict_amount_validation[None] ______________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+amount = None
+
+    @pytest.mark.parametrize('amount', [True, '1000', 1000., 0, -1, 10**12+1, None])
+    def test_strict_amount_validation(trained_bundle: Path, amount: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json={'amount_minor':amount,'currency':'EUR'}).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': None, 'currency': 'EUR'})
+E            +      where post = <starlette.testclient.TestClient object at 0x113563c80>.post
+
+tests/api/test_api.py:52: AssertionError
+_____________________ test_closed_input_contract[payload0] _____________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+payload = {'amount_minor': 1000, 'currency': 'GBP'}
+
+    @pytest.mark.parametrize('payload', [
+        {'amount_minor':1000,'currency':'GBP'},
+        {'amount_minor':1000},
+        {'amount_minor':1000,'currency':'EUR','label':1},
+        [{'amount_minor':1000,'currency':'EUR'}],
+    ])
+    def test_closed_input_contract(trained_bundle: Path, payload: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json=payload).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': 1000, 'currency': 'GBP'})
+E            +      where post = <starlette.testclient.TestClient object at 0x113456ff0>.post
+
+tests/api/test_api.py:63: AssertionError
+_____________________ test_closed_input_contract[payload1] _____________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+payload = {'amount_minor': 1000}
+
+    @pytest.mark.parametrize('payload', [
+        {'amount_minor':1000,'currency':'GBP'},
+        {'amount_minor':1000},
+        {'amount_minor':1000,'currency':'EUR','label':1},
+        [{'amount_minor':1000,'currency':'EUR'}],
+    ])
+    def test_closed_input_contract(trained_bundle: Path, payload: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json=payload).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': 1000})
+E            +      where post = <starlette.testclient.TestClient object at 0x1134559d0>.post
+
+tests/api/test_api.py:63: AssertionError
+_____________________ test_closed_input_contract[payload2] _____________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+payload = {'amount_minor': 1000, 'currency': 'EUR', 'label': 1}
+
+    @pytest.mark.parametrize('payload', [
+        {'amount_minor':1000,'currency':'GBP'},
+        {'amount_minor':1000},
+        {'amount_minor':1000,'currency':'EUR','label':1},
+        [{'amount_minor':1000,'currency':'EUR'}],
+    ])
+    def test_closed_input_contract(trained_bundle: Path, payload: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json=payload).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json={'amount_minor': 1000, 'currency': 'EUR', 'label': 1})
+E            +      where post = <starlette.testclient.TestClient object at 0x113452450>.post
+
+tests/api/test_api.py:63: AssertionError
+_____________________ test_closed_input_contract[payload3] _____________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+payload = [{'amount_minor': 1000, 'currency': 'EUR'}]
+
+    @pytest.mark.parametrize('payload', [
+        {'amount_minor':1000,'currency':'GBP'},
+        {'amount_minor':1000},
+        {'amount_minor':1000,'currency':'EUR','label':1},
+        [{'amount_minor':1000,'currency':'EUR'}],
+    ])
+    def test_closed_input_contract(trained_bundle: Path, payload: object) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+>           assert client.post('/score', json=payload).status_code == 422
+E           AssertionError: assert 404 == 422
+E            +  where 404 = <Response [404 Not Found]>.status_code
+E            +    where <Response [404 Not Found]> = post('/score', json=[{'amount_minor': 1000, 'currency': 'EUR'}])
+E            +      where post = <starlette.testclient.TestClient object at 0x113450ec0>.post
+
+tests/api/test_api.py:63: AssertionError
+__________ test_domain_error_and_invalid_json_do_not_reflect_request ___________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+
+    def test_domain_error_and_invalid_json_do_not_reflect_request(trained_bundle: Path) -> None:
+        with TestClient(api.create_app(trained_bundle)) as client:
+            response = client.post('/score', json={'amount_minor':1,'currency':'EUR'})
+>           assert response.status_code == 422 and response.json()['detail']['code'] == 'outside_training_domain'
+E           assert (404 == 422)
+E            +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/api/test_api.py:69: AssertionError
+________ test_startup_rejects_missing_corrupt_or_incompatible_artifact _________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+tmp_path = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/test_startup_rejects_missing_c0')
+
+    def test_startup_rejects_missing_corrupt_or_incompatible_artifact(trained_bundle: Path, tmp_path: Path) -> None:
+        import shutil
+>       with pytest.raises(RuntimeError, match='Model startup failed'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+tests/api/test_api.py:76: Failed
+____________ test_nonfinite_backend_failure_is_generic_and_log_safe ____________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1130ae300>
+caplog = <_pytest.logging.LogCaptureFixture object at 0x1156d2b10>
+
+    def test_nonfinite_backend_failure_is_generic_and_log_safe(trained_bundle: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture) -> None:
+        def bad_prediction(self: Bundle, rows: object) -> np.ndarray[tuple[int,...], np.dtype[np.float64]]:
+            raise ValueError('secret-canary backend detail')
+        monkeypatch.setattr(Bundle,'predict',bad_prediction)
+>       with pytest.raises(RuntimeError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+tests/api/test_api.py:94: Failed
+_______ test_request_failure_and_nonfinite_score_do_not_become_zero_risk _______
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x113560ef0>
+caplog = <_pytest.logging.LogCaptureFixture object at 0x1135606e0>
+
+    def test_request_failure_and_nonfinite_score_do_not_become_zero_risk(trained_bundle: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture) -> None:
+        with TestClient(api.create_app(trained_bundle), raise_server_exceptions=False) as client:
+            def broken(self: Bundle, rows: object) -> np.ndarray[tuple[int,...],np.dtype[np.float64]]:
+                raise ValueError('secret-canary backend detail')
+            monkeypatch.setattr(Bundle,'predict',broken)
+            with caplog.at_level(logging.INFO, logger='fraud_ml.api'):
+                response=client.post('/score',json={'amount_minor':1000,'currency':'EUR'},headers={'Authorization':'secret-canary'})
+>           assert response.status_code == 500 and response.json()=={'detail':{'code':'inference_failed'}}
+E           assert (404 == 500)
+E            +  where 404 = <Response [404 Not Found]>.status_code
+
+tests/api/test_api.py:108: AssertionError
+________________ test_concurrency_is_bounded_and_gate_released _________________
+
+trained_bundle = PosixPath('/private/var/folders/h6/0xk7s0_s7db7_87hfcpb9mhm0000gp/T/pytest-of-william/pytest-2/api-artifact0/run/bundle')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x113560da0>
+
+    def test_concurrency_is_bounded_and_gate_released(trained_bundle: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        entered, release = Event(), Event()
+        with TestClient(api.create_app(trained_bundle)) as client:
+            original = Bundle.predict
+            def slow(self: Bundle, rows: object) -> np.ndarray[tuple[int,...],np.dtype[np.float64]]:
+                entered.set()
+                assert release.wait(5)
+                return original(self, cast(list[dict[str,object]],rows))
+            monkeypatch.setattr(Bundle,'predict',slow)
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                future=pool.submit(client.post,'/score',json={'amount_minor':1000,'currency':'EUR'})
+                try:
+>                   assert entered.wait(5)
+E                   assert False
+E                    +  where False = wait(5)
+E                    +    where wait = <threading.Event at 0x113562ae0: unset>.wait
+
+tests/api/test_api.py:128: AssertionError
+=========================== short test summary info ============================
+FAILED tests/api/test_api.py::test_http_scores_evaluated_bundle_and_loads_it_only_once
+FAILED tests/api/test_api.py::test_strict_amount_validation[True] - Assertion...
+FAILED tests/api/test_api.py::test_strict_amount_validation[1000] - Assertion...
+FAILED tests/api/test_api.py::test_strict_amount_validation[1000.0] - Asserti...
+FAILED tests/api/test_api.py::test_strict_amount_validation[0] - AssertionErr...
+FAILED tests/api/test_api.py::test_strict_amount_validation[-1] - AssertionEr...
+FAILED tests/api/test_api.py::test_strict_amount_validation[1000000000001] - ...
+FAILED tests/api/test_api.py::test_strict_amount_validation[None] - Assertion...
+FAILED tests/api/test_api.py::test_closed_input_contract[payload0] - Assertio...
+FAILED tests/api/test_api.py::test_closed_input_contract[payload1] - Assertio...
+FAILED tests/api/test_api.py::test_closed_input_contract[payload2] - Assertio...
+FAILED tests/api/test_api.py::test_closed_input_contract[payload3] - Assertio...
+FAILED tests/api/test_api.py::test_domain_error_and_invalid_json_do_not_reflect_request
+FAILED tests/api/test_api.py::test_startup_rejects_missing_corrupt_or_incompatible_artifact
+FAILED tests/api/test_api.py::test_nonfinite_backend_failure_is_generic_and_log_safe
+FAILED tests/api/test_api.py::test_request_failure_and_nonfinite_score_do_not_become_zero_risk
+FAILED tests/api/test_api.py::test_concurrency_is_bounded_and_gate_released
+17 failed in 8.62s

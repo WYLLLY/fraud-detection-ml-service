@@ -1,0 +1,26 @@
+{
+  "user": "10001:10001",
+  "read_only_root": true,
+  "ports": {
+    "8002/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "8002"
+      }
+    ]
+  },
+  "security_options": [
+    "no-new-privileges:true"
+  ],
+  "cap_drop": [
+    "ALL"
+  ],
+  "mounts": [
+    {
+      "destination": "/models",
+      "writable": false
+    }
+  ],
+  "health": "healthy",
+  "image": "sha256:ffbd0eaf352bd3e9b27481ebc841ea15c28f691c7b8bff5b1d4d0e4231b38646"
+}

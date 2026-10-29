@@ -37,3 +37,5 @@ The approval is scoped to reviewed code and corrections. The full experiment, fi
 ## Linux CI advisory inventory correction
 
 Independent follow-up verdict: **APPROVE**. The five-case Red evidence was inspected; the reviewer ran the five new tests (5 passed), targeted Ruff/format, and the inventory script (66 installed package records on macOS, no version mapping needed there). The reviewer verified uv.lock's official Linux CPU source and that only torch's exact +cpu suffix maps to the public advisory version. Strict audit remains active with no ignored advisory, package upgrade or hidden omission. Linux audit completion is established separately by GitHub CI, not this review.
+
+The subsequent pytest console-entrypoint setup correction (`pythonpath = ["."]`) was independently approved. The reviewer ran `.venv/bin/pytest tests/unit/test_audit_inventory.py -q`: 5 passed. Test selection, strict configuration and assertions are unchanged; the full console-entrypoint regression is recorded by the primary agent.

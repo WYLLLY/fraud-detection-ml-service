@@ -75,3 +75,5 @@ Private repository: https://github.com/WYLLLY/fraud-detection-ml-service ; PR #1
 `scripts/audit_environment.py` now records both the exact installed version and advisory version, mapping only torch's official +cpu build suffix to the upstream public release. All distributions remain in the audit inventory (except the local editable application); no advisory is suppressed. Custom suffixes and other package versions remain unchanged and therefore fail strict audit if unavailable.
 
 Cycle F: five pre-fix behavioral failures in M1-F-red.txt; full regression after correction: **31 passed, 0 failures/errors/skips** (M1-F-green.txt). Strict Pyright includes scripts, and workflow Bandit also scans scripts. Remote rerun is pending at this evidence snapshot; merge requires green checks and independent review.
+
+The second CI attempt exposed pytest console-entrypoint discovery of the repository maintenance scripts. `pythonpath = ["."]` now explicitly makes the repository script package importable for both pytest entrypoints. No test was omitted or weakened; this collection failure is setup evidence, not TDD Red. The exact CI command is rerun locally.

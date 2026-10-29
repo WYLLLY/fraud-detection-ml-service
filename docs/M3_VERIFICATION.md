@@ -1,6 +1,6 @@
 # M3 verification — read-only Payment scoring
 
-Date: 29 October 2026 (Europe/Paris). Scope: M3 implementation on `feature/m3-payment-demo`, based on merged M2 `2cfcbdf`. **Implementation/tests PASS; actual demo SKIPPED pending fixture authorization; remote CI pending. Raw image scan FAIL with reviewed local exceptions.** M3 is incomplete and not merged.
+Date: 29 October 2026 (Europe/Paris). Scope: M3 implementation on `feature/m3-payment-demo`, based on merged M2 `2cfcbdf`. **Implementation/tests/review/CI PASS; actual demo SKIPPED pending fixture authorization. Raw image scan FAIL with reviewed local exceptions.** M3 is incomplete and not merged.
 
 ## Architecture and contract
 
@@ -23,7 +23,7 @@ Each call has a 1 s connection timeout and an absolute 5 s asyncio deadline encl
 
 Final full regression after the review correction: **134 passed, zero failed/errors/skipped in 17.15 s**. All M1/M2 tests retained. Exact output/JUnit and Red/Green traces are in docs/evidence/M3-*. No full 60,000-row retraining was needed or performed; the selected M1 bundle remains authoritative.
 
-Ruff and formatting PASS; strict Pyright src/tests/scripts PASS (0 errors/warnings); Bandit PASS; exact installed-environment pip-audit PASS with no known Python dependency vulnerability. Frozen offline lock/sync passed; the lock diff changes dependency placement only. Final remote CI remains pending.
+Ruff and formatting PASS; strict Pyright src/tests/scripts PASS (0 errors/warnings); Bandit PASS; exact installed-environment pip-audit PASS with no known Python dependency vulnerability. Frozen offline lock/sync passed; the lock diff changes dependency placement only. Both remote verify/container jobs passed as recorded below.
 
 ## Actual demo prerequisite and current blocker
 
@@ -38,6 +38,14 @@ The separate m3_review agent inspected the scoped source and A/B/C evidence, ind
 Final image `sha256:b181fbdd368dce2f0f0c0f1fc2d5488e0ce4d16d82f7dbd9a0962bfef9dd9df0` was rebuilt with runtime HTTPX2, started with the full trusted M1 bundle, and passed real HTTP smoke (EUR/USD/JPY, max error 0). UID10001, zero capabilities, no-new-privileges, removed privileged helpers and absent vulnerable optional components are recorded in M3-runtime-proof.json. Docker inspection confirmed read-only root/model mount and loopback-only publication. No Payment token is configured for the ML service.
 
 Fresh Trivy 0.76.1 scan: raw **FAIL/exit 1**, 44 HIGH occurrences across the same eight Debian CVEs, zero CRITICAL. The separate policy reports **ACCEPTED_REVIEWED_EXCEPTIONS, scanner_clean=false**, with unchanged tuples and 2026-11-28 expiry. No Python dependency vulnerability, new advisory, broad ignore or deadline extension was accepted. The expanded reviewed scope includes cli.py/payment_demo.py and dependency inputs. Raw scan, separate decision, runtime and smoke evidence are retained as M3-image-scan.json, M3-image-policy-result.json, M3-runtime-proof.json and M3-container-smoke.json. Final image evidence was submitted to the independent reviewer; no actual Payment acceptance is inferred from it.
+
+The final image follow-up independently approved source and bounded local policy, reran the actual policy CLI and verified matching runtime restrictions and absence of PAYMENT_API_TOKEN in the service. Recorded smoke was inspected, not independently rerun. No source finding remains; missing actual Payment acceptance still prevents milestone completion.
+
+## Remote evidence and handoff
+
+At source head `5e46755721b69b200fce9677d6a8d2d15333103e`, [push CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40870726817) and [PR CI](https://github.com/WYLLLY/fraud-detection-ml-service/actions/runs/40870907218) both completed successfully, including verify and container jobs. Downloaded PR logs confirm **134 tests passed in 33.55 s**, zero type diagnostics and no known Python dependency vulnerability. The amd64 image `sha256:4dbf7ccae0c97db81294edb9b7e15ab8aa7514726e813019a22d64289a1898f0` has the same 44/eight explicitly non-clean exception result. See M3-ci-summary.txt and M3-ci-image-policy-result.json. A following evidence-only documentation commit does not alter the reviewed source/image scope.
+
+[Private PR #3](https://github.com/WYLLLY/fraud-detection-ml-service/pull/3) remains **draft and unmerged**, because the real demonstration is still SKIPPED. No automatic merge is enabled. The task-owned ML/Payment fixture containers and fraud-ml VM were stopped while awaiting the pending fixture decision; volumes were preserved. Existing Payment/AI VM profiles were not started and Projet 1's Git state is unchanged apart from its pre-existing untracked review file. Temporary fixture credentials remain outside both repositories and have never been sent to ML or committed.
 
 ## Reproducible checks
 

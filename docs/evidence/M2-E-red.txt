@@ -1,0 +1,134 @@
+..............FFFFF.                                                     [100%]
+=================================== FAILURES ===================================
+____________ test_incomplete_scan_never_becomes_clean[empty_result] ____________
+
+change = 'empty_result'
+
+    @pytest.mark.parametrize(
+        "change",
+        ["empty_result", "missing_os", "missing_python", "wrong_vulnerabilities", "no_packages"],
+    )
+    def test_incomplete_scan_never_becomes_clean(change: str) -> None:
+        scan, runtime, policy = fixture()
+        if change == "empty_result":
+            scan["Results"] = [{}]
+        elif change == "missing_os":
+            scan["Results"] = scan["Results"][1:]
+        elif change == "missing_python":
+            scan["Results"] = scan["Results"][:1]
+        elif change == "wrong_vulnerabilities":
+            scan["Results"][0]["Vulnerabilities"] = {}
+        elif change == "no_packages":
+            scan["Results"][0]["Packages"] = []
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_image_policy.py:154: Failed
+_____________ test_incomplete_scan_never_becomes_clean[missing_os] _____________
+
+change = 'missing_os'
+
+    @pytest.mark.parametrize(
+        "change",
+        ["empty_result", "missing_os", "missing_python", "wrong_vulnerabilities", "no_packages"],
+    )
+    def test_incomplete_scan_never_becomes_clean(change: str) -> None:
+        scan, runtime, policy = fixture()
+        if change == "empty_result":
+            scan["Results"] = [{}]
+        elif change == "missing_os":
+            scan["Results"] = scan["Results"][1:]
+        elif change == "missing_python":
+            scan["Results"] = scan["Results"][:1]
+        elif change == "wrong_vulnerabilities":
+            scan["Results"][0]["Vulnerabilities"] = {}
+        elif change == "no_packages":
+            scan["Results"][0]["Packages"] = []
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_image_policy.py:154: Failed
+___________ test_incomplete_scan_never_becomes_clean[missing_python] ___________
+
+change = 'missing_python'
+
+    @pytest.mark.parametrize(
+        "change",
+        ["empty_result", "missing_os", "missing_python", "wrong_vulnerabilities", "no_packages"],
+    )
+    def test_incomplete_scan_never_becomes_clean(change: str) -> None:
+        scan, runtime, policy = fixture()
+        if change == "empty_result":
+            scan["Results"] = [{}]
+        elif change == "missing_os":
+            scan["Results"] = scan["Results"][1:]
+        elif change == "missing_python":
+            scan["Results"] = scan["Results"][:1]
+        elif change == "wrong_vulnerabilities":
+            scan["Results"][0]["Vulnerabilities"] = {}
+        elif change == "no_packages":
+            scan["Results"][0]["Packages"] = []
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_image_policy.py:154: Failed
+_______ test_incomplete_scan_never_becomes_clean[wrong_vulnerabilities] ________
+
+change = 'wrong_vulnerabilities'
+
+    @pytest.mark.parametrize(
+        "change",
+        ["empty_result", "missing_os", "missing_python", "wrong_vulnerabilities", "no_packages"],
+    )
+    def test_incomplete_scan_never_becomes_clean(change: str) -> None:
+        scan, runtime, policy = fixture()
+        if change == "empty_result":
+            scan["Results"] = [{}]
+        elif change == "missing_os":
+            scan["Results"] = scan["Results"][1:]
+        elif change == "missing_python":
+            scan["Results"] = scan["Results"][:1]
+        elif change == "wrong_vulnerabilities":
+            scan["Results"][0]["Vulnerabilities"] = {}
+        elif change == "no_packages":
+            scan["Results"][0]["Packages"] = []
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_image_policy.py:154: Failed
+____________ test_incomplete_scan_never_becomes_clean[no_packages] _____________
+
+change = 'no_packages'
+
+    @pytest.mark.parametrize(
+        "change",
+        ["empty_result", "missing_os", "missing_python", "wrong_vulnerabilities", "no_packages"],
+    )
+    def test_incomplete_scan_never_becomes_clean(change: str) -> None:
+        scan, runtime, policy = fixture()
+        if change == "empty_result":
+            scan["Results"] = [{}]
+        elif change == "missing_os":
+            scan["Results"] = scan["Results"][1:]
+        elif change == "missing_python":
+            scan["Results"] = scan["Results"][:1]
+        elif change == "wrong_vulnerabilities":
+            scan["Results"][0]["Vulnerabilities"] = {}
+        elif change == "no_packages":
+            scan["Results"][0]["Packages"] = []
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_image_policy.py:154: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/test_image_policy.py::test_incomplete_scan_never_becomes_clean[empty_result]
+FAILED tests/unit/test_image_policy.py::test_incomplete_scan_never_becomes_clean[missing_os]
+FAILED tests/unit/test_image_policy.py::test_incomplete_scan_never_becomes_clean[missing_python]
+FAILED tests/unit/test_image_policy.py::test_incomplete_scan_never_becomes_clean[wrong_vulnerabilities]
+FAILED tests/unit/test_image_policy.py::test_incomplete_scan_never_becomes_clean[no_packages]
+5 failed, 15 passed in 0.05s

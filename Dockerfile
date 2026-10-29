@@ -16,6 +16,9 @@ RUN apt-get update && apt-get upgrade -y --no-install-recommends && rm -rf /var/
 RUN groupadd --gid 10001 app && useradd --uid 10001 --gid app --no-create-home app \
     && mkdir /models && chown app:app /models
 COPY --from=build /app/.venv /app/.venv
+# These privileged/terminal helpers are not used by numeric inference.
+RUN rm -f /usr/bin/mount /usr/bin/umount /usr/bin/nsenter /usr/bin/infocmp \
+    && find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 USER 10001:10001
 EXPOSE 8002
 HEALTHCHECK --interval=10s --timeout=3s --start-period=20s --retries=3 \

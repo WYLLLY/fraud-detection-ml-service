@@ -47,7 +47,7 @@ Only load bundles produced by this project in a trusted local directory. Joblib 
 
 The selected bundle includes immutable feature schema/order, domains, threshold, data/split/config/environment/source identities, validation metrics and model files. Its manifest digest excludes its own version field. Preserve the trusted bundle and locked environment together.
 
-See [M1 test matrix](docs/M1_TEST_MATRIX.md), [verification](docs/M1_VERIFICATION.md) and [actual experiment report](docs/results/M1/REPORT.md) for evidence and limitations. API, Docker runtime and real Payment integration belong to later milestones.
+See [M1 test matrix](docs/M1_TEST_MATRIX.md), [verification](docs/M1_VERIFICATION.md) and [actual experiment report](docs/results/M1/REPORT.md) for evidence and limitations. Local inference evidence follows below; real Payment integration belongs to M3.
 
 ## M2 local inference
 
@@ -79,3 +79,5 @@ docker compose down
 For this host's dedicated engine, prefix Compose commands with `DOCKER_CONTEXT=colima-fraud-ml`. The service publishes only loopback port 8002, runs UID 10001 with read-only root and model mount, drops capabilities and limits resources. Authentication is intentionally absent for this local-only MVP; broader network exposure requires a separate decision.
 
 See [M2 verification](docs/M2_VERIFICATION.md) and [independent review](reviews/M2-review.md). No training happens through HTTP or service startup.
+
+The image scan is **not clean**: eight inherited HIGH Debian advisories remain, with no stable fix at review time. The raw Trivy failure is preserved. A separate, tested policy accepts only exact reviewed package/advisory versions under verified local runtime restrictions until **28 November 2026**. Any critical/new/fixable/expired exception, changed serving code or missing mitigation fails CI. See [the dated security decision](docs/M2_IMAGE_SECURITY.md); this is a bounded local portfolio exception, not production approval.

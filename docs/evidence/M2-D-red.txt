@@ -1,0 +1,120 @@
+............FF                                                           [100%]
+=================================== FAILURES ===================================
+______ test_unknown_or_out_of_scope_risk_is_never_accepted[host_network] _______
+
+change = 'host_network'
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "critical",
+            "new_cve",
+            "new_version",
+            "fix_available",
+            "expired",
+            "root",
+            "writable",
+            "capabilities",
+            "public_port",
+            "image_mismatch",
+            "helper_present",
+            "host_network",
+            "malformed_severity",
+        ],
+    )
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original = fixture()
+        scan, runtime, policy = deepcopy(original)
+        finding = scan["Results"][0]["Vulnerabilities"][0]
+        if change == "critical":
+            finding["Severity"] = "CRITICAL"
+        elif change == "new_cve":
+            finding["VulnerabilityID"] = "CVE-new"
+        elif change == "new_version":
+            finding["InstalledVersion"] = "2"
+        elif change == "fix_available":
+            finding["FixedVersion"] = "2"
+        elif change == "expired":
+            policy["expires"] = "2026-10-28"
+        elif change == "host_network":
+            runtime["HostConfig"]["NetworkMode"] = "host"
+        elif change == "malformed_severity":
+            finding["Severity"] = "unexpected"
+        elif change == "root":
+            runtime["Config"]["User"] = "0"
+        elif change == "writable":
+            runtime["HostConfig"]["ReadonlyRootfs"] = False
+        elif change == "capabilities":
+            runtime["proof"]["cap_eff"] = "0000000000000001"
+        elif change == "public_port":
+            runtime["HostConfig"]["PortBindings"]["8002/tcp"][0]["HostIp"] = "0.0.0.0"
+        elif change == "image_mismatch":
+            runtime["Image"] = "sha256:other"
+        elif change == "helper_present":
+            runtime["proof"]["helpers_absent"] = False
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_image_policy.py:120: Failed
+___ test_unknown_or_out_of_scope_risk_is_never_accepted[malformed_severity] ____
+
+change = 'malformed_severity'
+
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "critical",
+            "new_cve",
+            "new_version",
+            "fix_available",
+            "expired",
+            "root",
+            "writable",
+            "capabilities",
+            "public_port",
+            "image_mismatch",
+            "helper_present",
+            "host_network",
+            "malformed_severity",
+        ],
+    )
+    def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
+        original = fixture()
+        scan, runtime, policy = deepcopy(original)
+        finding = scan["Results"][0]["Vulnerabilities"][0]
+        if change == "critical":
+            finding["Severity"] = "CRITICAL"
+        elif change == "new_cve":
+            finding["VulnerabilityID"] = "CVE-new"
+        elif change == "new_version":
+            finding["InstalledVersion"] = "2"
+        elif change == "fix_available":
+            finding["FixedVersion"] = "2"
+        elif change == "expired":
+            policy["expires"] = "2026-10-28"
+        elif change == "host_network":
+            runtime["HostConfig"]["NetworkMode"] = "host"
+        elif change == "malformed_severity":
+            finding["Severity"] = "unexpected"
+        elif change == "root":
+            runtime["Config"]["User"] = "0"
+        elif change == "writable":
+            runtime["HostConfig"]["ReadonlyRootfs"] = False
+        elif change == "capabilities":
+            runtime["proof"]["cap_eff"] = "0000000000000001"
+        elif change == "public_port":
+            runtime["HostConfig"]["PortBindings"]["8002/tcp"][0]["HostIp"] = "0.0.0.0"
+        elif change == "image_mismatch":
+            runtime["Image"] = "sha256:other"
+        elif change == "helper_present":
+            runtime["proof"]["helpers_absent"] = False
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_image_policy.py:120: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[host_network]
+FAILED tests/unit/test_image_policy.py::test_unknown_or_out_of_scope_risk_is_never_accepted[malformed_severity]
+2 failed, 12 passed in 0.03s

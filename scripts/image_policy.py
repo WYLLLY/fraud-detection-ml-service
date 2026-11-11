@@ -119,8 +119,23 @@ def assess(
     reviewed = {
         (p["id"], p["package"], p["version"]) for p in policy["exceptions"] if p.get("reason")
     }
+    sqlite_fix = json_object(policy.get("verified_sqlite_fix", {}))
+    sqlite_package = sqlite_fix.get("package_version")
+    valid_review = today <= date.fromisoformat(policy["expires"])
     accepted: list[str] = []
+    verified_fixes: list[str] = []
     for result in scan_results(scan):
+        sqlite_verified = (
+            result["Type"] == "debian"
+            and isinstance(sqlite_package, str)
+            and proof.get("sqlite_version") == sqlite_fix.get("runtime_version")
+            and any(
+                p["Name"] == "libsqlite3-0"
+                and p.get("SrcName") == "sqlite3"
+                and f"{p['Version']}-{p.get('Release')}" == sqlite_package
+                for p in result["Packages"]
+            )
+        )
         for finding in cast(list[dict[str, Any]], result.get("Vulnerabilities", [])):
             severity = finding["Severity"]
             if severity == "CRITICAL":
@@ -131,18 +146,35 @@ def assess(
                 continue
             key = (finding["VulnerabilityID"], finding["PkgName"], finding["InstalledVersion"])
             if (
+                valid_review
+                and sqlite_verified
+                and key[1:] == ("libsqlite3-0", sqlite_package)
+                and key[0] in sqlite_fix.get("advisories", [])
+                and finding.get("Status") == "affected"
+                and not finding.get("FixedVersion")
+            ):
+                verified_fixes.append(finding["VulnerabilityID"])
+                continue
+            if (
                 result["Type"] != "debian"
                 or key not in reviewed
                 or finding.get("FixedVersion")
-                or today > date.fromisoformat(policy["expires"])
+                or not valid_review
             ):
                 raise ValueError("New, fixable, expired or unreviewed HIGH finding")
             accepted.append(finding["VulnerabilityID"])
+    status = "PASS"
+    if accepted:
+        status = "ACCEPTED_REVIEWED_EXCEPTIONS"
+    elif verified_fixes:
+        status = "VERIFIED_VENDOR_FIXES"
     return {
-        "status": "ACCEPTED_REVIEWED_EXCEPTIONS" if accepted else "PASS",
-        "scanner_clean": not bool(accepted),
+        "status": status,
+        "scanner_clean": not (accepted or verified_fixes),
         "accepted_occurrences": len(accepted),
         "accepted_cves": sorted(set(accepted)),
+        "verified_vendor_fix_occurrences": len(verified_fixes),
+        "verified_vendor_fix_cves": sorted(set(verified_fixes)),
         "expires": policy["expires"],
         "image": runtime["Image"],
     }

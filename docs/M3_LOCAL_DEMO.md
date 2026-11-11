@@ -1,6 +1,6 @@
 # Run and understand the local demonstration
 
-Verified on 29 October 2026. **All three milestones are implemented and locally verified.** M1/M2 are merged; M3's completion evidence is on the local feature branch and has not been merged or deployed by this work.
+The original demonstration was verified on 29 October 2026. **All three milestones are implemented and merged into `main`.** [PR #3](https://github.com/WYLLLY/fraud-detection-ml-service/pull/3) integrated M3 and its verification evidence.
 
 ## What runs
 
@@ -42,7 +42,7 @@ See [M3-real-demo.json](evidence/M3-real-demo.json) for state, response hashes, 
 
 ## GitHub, the portfolio and a possible public demo
 
-The GitHub repository is currently private. A portfolio page can publicly explain the architecture, measured results and this local demonstration while that source remains private. The current Project 5 page presents recorded evidence; it does not operate a public Payment or FastAPI service.
+The GitHub repository is public. The portfolio case study presents the architecture, measured results and evidence from the local demonstration. The Payment and FastAPI services run on the operator's machine.
 
 A proposed zero-Python-server public demo could export the selected logistic model's coefficients and preprocessing into a small browser-readable artifact, verify numerical parity with Python, and compute synthetic scores in the visitor's browser. This would exercise the evaluated model locally in the browser; FastAPI/Payment integration would remain demonstrated by the local evidence. **That interactive browser scorer is not implemented or deployed by M1–M3.** It is a separate presentation extension requiring its own tests and review.
 

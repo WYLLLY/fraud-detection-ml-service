@@ -168,7 +168,16 @@ def test_complete_clean_scan_permits_omitted_vulnerability_list() -> None:
 
 @pytest.mark.parametrize(
     "change",
-    ["none", "wrong_library", "wrong_inventory", "unknown_advisory", "fix_available", "expired"],
+    [
+        "none",
+        "wrong_library",
+        "wrong_inventory",
+        "unknown_advisory",
+        "fix_available",
+        "expired",
+        "missing_runtime_versions",
+        "malformed_advisories",
+    ],
 )
 def test_verified_debian_sqlite_package_is_reported_separately(change: str) -> None:
     scan, runtime, policy = fixture()
@@ -204,6 +213,11 @@ def test_verified_debian_sqlite_package_is_reported_separately(change: str) -> N
         finding["FixedVersion"] = "3.54.2"
     elif change == "expired":
         policy["expires"] = "2026-10-28"
+    elif change == "missing_runtime_versions":
+        del runtime["proof"]["sqlite_version"]
+        del policy["verified_sqlite_fix"]["runtime_version"]
+    elif change == "malformed_advisories":
+        policy["verified_sqlite_fix"]["advisories"] = advisory
     today = date(2026, 10, 29)
     if change != "none":
         with pytest.raises(ValueError):

@@ -9,8 +9,8 @@ jobs:
     env:
       MPLCONFIGDIR: ${{ github.workspace }}/.local/matplotlib
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
       - name: Install locked environment
@@ -37,8 +37,8 @@ jobs:
       FRAUD_MODEL_DIR: .local/ci-run/bundle
       MPLCONFIGDIR: ${{ github.workspace }}/.local/matplotlib
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.12'
       - name: Prepare a tiny trusted fixture (not benchmark accuracy)
@@ -63,7 +63,8 @@ jobs:
             -v /var/run/docker.sock:/var/run/docker.sock:ro \
             -v "$PWD/.local/trivy-cache:/root/.cache/trivy" \
             -v "$PWD/.local/trivy-reports:/reports" \
-            aquasec/trivy:0.76.1 image --scanners vuln --severity HIGH,CRITICAL \
+            aquasec/trivy:0.76.1@sha256:790fd66d1697395d8693d1acaa1ea702406a20f109b6fc7bac8db623eca6c06c \
+            image --scanners vuln --severity HIGH,CRITICAL \
             --exit-code 1 --format json --output /reports/image-scan.json \
             --no-progress fraud-ml:m2
           scanner_status=$?
@@ -74,7 +75,7 @@ jobs:
             --scan .local/trivy-reports/image-scan.json --runtime .local/runtime.json \
             --proof .local/runtime-proof.json --policy configs/image-security-policy.json \
             --scanner-exit-code "$scanner_status" --output .local/image-policy-result.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: image-security-evidence

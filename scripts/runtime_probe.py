@@ -2,6 +2,7 @@
 
 import json
 import os
+import sqlite3
 import stat
 from pathlib import Path
 
@@ -9,6 +10,8 @@ from fraud_ml.bundle import load_bundle
 
 
 def main() -> None:
+    if sqlite3.sqlite_version != "3.54.1":
+        raise RuntimeError("Unexpected SQLite runtime version")
     bundle = load_bundle(Path(os.environ["FRAUD_MODEL_DIR"]))
     bundle.predict([{"amount_minor": 1000, "currency": "EUR"}])
     status = dict(
@@ -28,6 +31,7 @@ def main() -> None:
         json.dumps(
             {
                 "uid": os.getuid(),
+                "sqlite_version": sqlite3.sqlite_version,
                 "cap_eff": status["CapEff"].strip(),
                 "no_new_privs": int(status["NoNewPrivs"]),
                 "helpers_absent": all(not Path(p).exists() for p in helpers),

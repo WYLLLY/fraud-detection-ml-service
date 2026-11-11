@@ -5,3 +5,5 @@ The CI workflow pins checkout, Python setup, and artifact upload to immutable Gi
 The container job rebuilds the inference image and exercises it over HTTP. Its evidence artifact contains the current raw vulnerability report, runtime proof, and the outcome of the reviewed local-only image policy. The pull request records the regression, simulation, and scan results for this change.
 
 The local demonstration guide now identifies the public repository and the merged M3 milestone.
+
+The November image scan identified three additional SQLite advisories. Debian Trixie has no fixed SQLite package for these advisories, and removing the library would break the base image's util-linux dependency chain. The runtime now installs the single Debian `libsqlite3-0` package at version `3.54.1-2` from Debian Snapshot, with a SHA-256 verified against the signed Debian package index for each supported architecture. The runtime probe checks that Python loads SQLite 3.54.1. The existing image policy retains its expiry and exception list.

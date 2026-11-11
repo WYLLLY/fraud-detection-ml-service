@@ -164,3 +164,53 @@ def test_complete_clean_scan_permits_omitted_vulnerability_list() -> None:
     result = assess(scan, runtime, policy, date(2026, 10, 29))
     assert result["scanner_clean"] is True
     assert result["accepted_occurrences"] == 0
+
+
+@pytest.mark.parametrize(
+    "change",
+    ["none", "wrong_library", "wrong_inventory", "unknown_advisory", "fix_available", "expired"],
+)
+def test_verified_debian_sqlite_package_is_reported_separately(change: str) -> None:
+    scan, runtime, policy = fixture()
+    advisory = "CVE-2026-119373"
+    package = {
+        "Name": "libsqlite3-0",
+        "Version": "3.54.1",
+        "Release": "2",
+        "SrcName": "sqlite3",
+    }
+    finding = {
+        "VulnerabilityID": advisory,
+        "PkgName": "libsqlite3-0",
+        "InstalledVersion": "3.54.1-2",
+        "Severity": "HIGH",
+        "Status": "affected",
+    }
+    scan["Results"][0]["Packages"].append(package)
+    scan["Results"][0]["Vulnerabilities"] = [finding]
+    runtime["proof"]["sqlite_version"] = "3.54.1"
+    policy["verified_sqlite_fix"] = {
+        "advisories": [advisory],
+        "package_version": "3.54.1-2",
+        "runtime_version": "3.54.1",
+    }
+    if change == "wrong_library":
+        runtime["proof"]["sqlite_version"] = "3.46.1"
+    elif change == "wrong_inventory":
+        package["Release"] = "1"
+    elif change == "unknown_advisory":
+        finding["VulnerabilityID"] = "CVE-new"
+    elif change == "fix_available":
+        finding["FixedVersion"] = "3.54.2"
+    elif change == "expired":
+        policy["expires"] = "2026-10-28"
+    today = date(2026, 10, 29)
+    if change != "none":
+        with pytest.raises(ValueError):
+            assess(scan, runtime, policy, today)
+        return
+    result = assess(scan, runtime, policy, today)
+    assert result["status"] == "VERIFIED_VENDOR_FIXES"
+    assert result["scanner_clean"] is False
+    assert result["accepted_occurrences"] == 0
+    assert result["verified_vendor_fix_cves"] == [advisory]

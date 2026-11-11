@@ -120,15 +120,33 @@ def assess(
         (p["id"], p["package"], p["version"]) for p in policy["exceptions"] if p.get("reason")
     }
     sqlite_fix = json_object(policy.get("verified_sqlite_fix", {}))
-    sqlite_package = sqlite_fix.get("package_version")
+    sqlite_package: object = sqlite_fix.get("package_version")
+    sqlite_runtime: object = sqlite_fix.get("runtime_version")
+    sqlite_advisories: object = sqlite_fix.get("advisories")
+    reviewed_sqlite_advisories: set[str] = set()
+    if "verified_sqlite_fix" in policy:
+        if (
+            not isinstance(sqlite_package, str)
+            or not sqlite_package.strip()
+            or not isinstance(sqlite_runtime, str)
+            or not sqlite_runtime.strip()
+            or not isinstance(sqlite_advisories, list)
+            or not sqlite_advisories
+            or not all(
+                isinstance(cve, str) and cve.strip()
+                for cve in cast(list[object], sqlite_advisories)
+            )
+        ):
+            raise ValueError("Incomplete verified SQLite fix configuration")
+        reviewed_sqlite_advisories = set(cast(list[str], sqlite_advisories))
     valid_review = today <= date.fromisoformat(policy["expires"])
     accepted: list[str] = []
     verified_fixes: list[str] = []
     for result in scan_results(scan):
         sqlite_verified = (
             result["Type"] == "debian"
-            and isinstance(sqlite_package, str)
-            and proof.get("sqlite_version") == sqlite_fix.get("runtime_version")
+            and bool(reviewed_sqlite_advisories)
+            and proof.get("sqlite_version") == sqlite_runtime
             and any(
                 p["Name"] == "libsqlite3-0"
                 and p.get("SrcName") == "sqlite3"
@@ -149,7 +167,7 @@ def assess(
                 valid_review
                 and sqlite_verified
                 and key[1:] == ("libsqlite3-0", sqlite_package)
-                and key[0] in sqlite_fix.get("advisories", [])
+                and key[0] in reviewed_sqlite_advisories
                 and finding.get("Status") == "affected"
                 and not finding.get("FixedVersion")
             ):

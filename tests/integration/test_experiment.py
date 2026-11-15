@@ -1,4 +1,6 @@
 import json
+import shlex
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -74,6 +76,36 @@ def test_generate_cli_and_no_accidental_overwrite(tmp_path: Path) -> None:
     assert first.returncode == 0, first.stderr
     again = subprocess.run(cmd, text=True, capture_output=True, check=False)
     assert again.returncode != 0
+
+
+@pytest.mark.integration
+def test_readme_reproduction_preserves_committed_evidence(tmp_path: Path) -> None:
+    project = Path(__file__).resolve().parents[2]
+    config = tmp_path / "configs" / "experiment.json"
+    config.parent.mkdir()
+    shutil.copyfile(project / "configs" / "smoke.json", config)
+    published = tmp_path / "docs" / "results" / "M1" / "REPORT.md"
+    published.parent.mkdir(parents=True)
+    published.write_text("Published evaluation evidence")
+    phases = ("generate", "train", "evaluate")
+    commands = [
+        shlex.split(line)[4:]
+        for line in (project / "README.md").read_text().splitlines()
+        if line.startswith(tuple(f"uv run --frozen fraud-ml {phase} " for phase in phases))
+    ]
+    assert tuple(args[0] for args in commands) == phases
+    for args in commands:
+        completed = subprocess.run(
+            [sys.executable, "-m", "fraud_ml", *args],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert completed.returncode == 0, completed.stderr
+    assert published.read_text() == "Published evaluation evidence"
+    report_dir = tmp_path / commands[-1][commands[-1].index("--report-dir") + 1]
+    assert all((report_dir / path).is_file() for path in ("REPORT.md", "metrics.json", "pr.png"))
 
 
 def test_bundle_requires_trusted_well_formed_manifest(tmp_path: Path) -> None:

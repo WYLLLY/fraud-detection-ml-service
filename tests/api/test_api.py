@@ -1,5 +1,6 @@
 import json
 import logging
+from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from threading import Event
@@ -88,6 +89,61 @@ def test_domain_error_and_invalid_json_do_not_reflect_request(trained_bundle: Pa
             headers={"Content-Type": "application/json"},
         )
         assert malformed.status_code == 422 and "secret-canary" not in malformed.text
+
+
+@pytest.mark.parametrize("streamed", [False, True])
+def test_score_enforces_body_limit_and_keeps_valid_requests_working(
+    trained_bundle: Path, streamed: bool
+) -> None:
+    payload = b'{"amount_minor":1000,"currency":"EUR"}'
+    headers = {"Content-Type": "application/json"}
+    at_limit = payload.ljust(1024)
+
+    def chunks() -> Iterator[bytes]:
+        yield at_limit
+        yield b" "
+
+    with TestClient(api.create_app(trained_bundle)) as client:
+        assert client.post("/score", content=at_limit, headers=headers).status_code == 200
+        response = client.post(
+            "/score", content=chunks() if streamed else at_limit + b" ", headers=headers
+        )
+        assert response.status_code == 413
+        assert response.json() == {"detail": {"code": "request_too_large"}}
+        assert response.headers["Cache-Control"] == "no-store"
+        assert client.post("/score", content=payload, headers=headers).status_code == 200
+
+
+def test_score_admission_leaves_health_responsive(
+    trained_bundle: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    entered, release = Event(), Event()
+    monkeypatch.setattr(api, "MAX_PENDING_SCORES", 1, raising=False)
+    score = {"amount_minor": 1000, "currency": "EUR"}
+    with TestClient(api.create_app(trained_bundle)) as client:
+        original = Bundle.predict
+
+        def slow(
+            self: Bundle, rows: list[dict[str, object]]
+        ) -> np.ndarray[tuple[int, ...], np.dtype[np.float64]]:
+            entered.set()
+            assert release.wait(5)
+            return original(self, rows)
+
+        monkeypatch.setattr(Bundle, "predict", slow)
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            future = pool.submit(client.post, "/score", json=score)
+            try:
+                assert entered.wait(5)
+                assert client.get("/health").status_code == 200
+                busy = client.post("/score", json=score)
+                assert busy.status_code == 503
+                assert busy.json() == {"detail": {"code": "score_capacity_exceeded"}}
+            finally:
+                release.set()
+            assert future.result().status_code == 200
+        monkeypatch.setattr(Bundle, "predict", original)
+        assert client.post("/score", json=score).status_code == 200
 
 
 def test_startup_rejects_missing_corrupt_or_incompatible_artifact(
@@ -315,3 +371,10 @@ def test_recommendation_includes_exact_saved_threshold(
             monkeypatch.setattr(Bundle, "predict", controlled)
             result = client.post("/score", json={"amount_minor": 1000, "currency": "EUR"})
             assert result.status_code == 200 and result.json()["recommendation"] == expected
+
+
+def test_score_and_health_accept_a_configured_asgi_root_path(trained_bundle: Path) -> None:
+    with TestClient(api.create_app(trained_bundle), root_path="/risk") as client:
+        assert client.get("/risk/health").status_code == 200
+        response = client.post("/risk/score", json={"amount_minor": 1000, "currency": "EUR"})
+        assert response.status_code == 200

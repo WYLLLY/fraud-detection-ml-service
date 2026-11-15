@@ -1,9 +1,14 @@
 name: Fraud ML verification
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '31 7 * * 2'
 permissions:
   contents: read
 jobs:
   verify:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -58,18 +63,22 @@ jobs:
         run: |
           mkdir -p .local/trivy-cache .local/trivy-reports
           rm -f .local/trivy-reports/image-scan.json
+          container=$(docker compose ps -q fraud)
+          docker inspect "$container" > .local/runtime.json
+          image_id=$(docker inspect --format '{{.Image}}' "$container")
+          image_ref=$(docker image inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$image_id" |
+            awk -F @ -v id="$image_id" '$2 == id { print; exit }')
           set +e
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock:ro \
             -v "$PWD/.local/trivy-cache:/root/.cache/trivy" \
             -v "$PWD/.local/trivy-reports:/reports" \
             aquasec/trivy:0.76.1@sha256:790fd66d1697395d8693d1acaa1ea702406a20f109b6fc7bac8db623eca6c06c \
-            image --scanners vuln --severity HIGH,CRITICAL \
+            image --image-src docker --scanners vuln --severity HIGH,CRITICAL \
             --exit-code 1 --format json --output /reports/image-scan.json \
-            --no-progress fraud-ml:m2
+            --no-progress "${image_ref:-$image_id}"
           scanner_status=$?
           set -e
-          docker inspect "$(docker compose ps -q fraud)" > .local/runtime.json
           docker compose exec -T fraud python - < scripts/runtime_probe.py > .local/runtime-proof.json
           uv run --frozen python scripts/image_policy.py \
             --scan .local/trivy-reports/image-scan.json --runtime .local/runtime.json \

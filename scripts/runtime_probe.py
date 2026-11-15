@@ -1,4 +1,4 @@
-"""Read-only container evidence for the local image exception policy."""
+"""Read-only container evidence for the local image gate."""
 
 import json
 import os
@@ -10,8 +10,6 @@ from fraud_ml.bundle import load_bundle
 
 
 def main() -> None:
-    if sqlite3.sqlite_version != "3.54.1":
-        raise RuntimeError("Unexpected SQLite runtime version")
     bundle = load_bundle(Path(os.environ["FRAUD_MODEL_DIR"]))
     bundle.predict([{"amount_minor": 1000, "currency": "EUR"}])
     status = dict(

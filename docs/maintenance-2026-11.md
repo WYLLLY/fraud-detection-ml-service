@@ -22,3 +22,11 @@ security packages still come from the live Trixie repositories so patched
 packages can reach the next build. Check the raw report and the policy output
 before the local-only exception expires on 28 November 2026. The audit
 follow-up preserves the existing expiry and advisory list.
+
+## Ubuntu runtime follow-up, 15 November 2026
+
+Ubuntu 24.04 with distribution Python 3.12 replaces the Debian base and the
+exception file. CI now fails on any High or Critical result, validates the
+operating system and Python inventory, and binds the scan to the running image.
+The retired exception and SQLite attestation remain documented as historical evidence.
+The ARM64 container passed local HTTP/bundle parity and the strict scan without exceptions.

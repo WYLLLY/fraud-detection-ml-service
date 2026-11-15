@@ -1,35 +1,24 @@
 FROM ghcr.io/astral-sh/uv:0.12.23@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21 AS uv
-FROM python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704 AS build
-COPY --from=uv /uv /usr/local/bin/uv
+FROM ubuntu:24.04@sha256:2198e4c65076e9cb0b3d695219df667c0e3b0072da64ca3c2648aca17dcecaf5 AS base
+RUN apt-get update && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends ca-certificates python3.12 libstdc++6 libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
+
+FROM base AS build
+COPY --from=uv /uv /usr/local/bin/uv
 ENV UV_PYTHON_DOWNLOADS=never UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-install-project
+RUN uv sync --python /usr/bin/python3.12 --frozen --no-dev --no-install-project
 COPY src ./src
-RUN uv sync --frozen --no-dev --no-editable
+RUN uv sync --python /usr/bin/python3.12 --frozen --no-dev --no-editable
 
-FROM python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704 AS runtime
-WORKDIR /app
+FROM base AS runtime
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \
     FRAUD_MODEL_DIR=/models OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
-RUN apt-get update && apt-get upgrade -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
-# Trixie has no fixed package for the SQLite 3.54 advisories. Install only the
-# verified Debian library; util-linux requires SQLite through liblastlog2.
-RUN set -eu; \
-    case "$(dpkg --print-architecture)" in \
-      amd64) archive=a20ce6080f324fec313559502446a666b67599f4; sha256=7789bf0b2338b781de388d83d7c473f9386c9ef638af110b5c1b3d1debb36f00 ;; \
-      arm64) archive=bca4131353b1679d8d1b06c78061fbd127669e12; sha256=27416ae5fd9a8a491cacc2316cb08ebf31ac0d3d628da5576e04eeba365605a4 ;; \
-      *) echo 'The pinned SQLite runtime is available for amd64 and arm64' >&2; exit 1 ;; \
-    esac; \
-    python -c 'import pathlib, sys, urllib.request; pathlib.Path("/tmp/sqlite.deb").write_bytes(urllib.request.urlopen(sys.argv[1], timeout=30).read())' \
-      "https://snapshot.debian.org/file/${archive}"; \
-    echo "${sha256}  /tmp/sqlite.deb" | sha256sum --check; \
-    apt-get install -y --no-install-recommends /tmp/sqlite.deb; \
-    rm /tmp/sqlite.deb
 RUN groupadd --gid 10001 app && useradd --uid 10001 --gid app --no-create-home app \
     && mkdir /models && chown app:app /models
 COPY --from=build /app/.venv /app/.venv
-# These privileged/terminal helpers are not used by numeric inference.
 RUN rm -f /usr/bin/mount /usr/bin/umount /usr/bin/nsenter /usr/bin/infocmp \
     && find / -xdev -type f -perm /6000 -exec chmod a-s {} +
 USER 10001:10001

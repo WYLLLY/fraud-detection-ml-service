@@ -59,7 +59,7 @@ jobs:
           docker compose up --no-build --wait --wait-timeout 90
           uv run --frozen python scripts/smoke_api.py --bundle .local/ci-run/bundle
           docker compose exec -T fraud python -c 'import os; assert os.getuid() == 10001'
-      - name: Preserve raw scan and apply reviewed local-only policy
+      - name: Require a clean runtime image scan and preserve evidence
         run: |
           mkdir -p .local/trivy-cache .local/trivy-reports
           rm -f .local/trivy-reports/image-scan.json
@@ -82,7 +82,7 @@ jobs:
           docker compose exec -T fraud python - < scripts/runtime_probe.py > .local/runtime-proof.json
           uv run --frozen python scripts/image_policy.py \
             --scan .local/trivy-reports/image-scan.json --runtime .local/runtime.json \
-            --proof .local/runtime-proof.json --policy configs/image-security-policy.json \
+            --proof .local/runtime-proof.json \
             --scanner-exit-code "$scanner_status" --output .local/image-policy-result.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()

@@ -80,7 +80,7 @@ For this host's dedicated engine, prefix Compose commands with `DOCKER_CONTEXT=c
 
 See [M2 verification](docs/M2_VERIFICATION.md) and [independent review](reviews/M2-review.md). No training happens through HTTP or service startup.
 
-The image scan is **not clean**: eight inherited HIGH Debian advisories remain, with no stable fix at review time. The raw Trivy failure is preserved. A separate, tested policy accepts only exact reviewed package/advisory versions under verified local runtime restrictions until **28 November 2026**. Any critical/new/fixable/expired exception, changed serving code or missing mitigation fails CI. See [the dated security decision](docs/M2_IMAGE_SECURITY.md); this is a bounded local portfolio exception, not production approval.
+The current image uses Ubuntu 24.04 and Python 3.12. CI requires a complete Trivy inventory of the exact running image and fails on any High or Critical finding. It also verifies non-root execution and the read-only local configuration. See [image security](docs/M2_IMAGE_SECURITY.md).
 
 ## M3 read-only Payment demo
 

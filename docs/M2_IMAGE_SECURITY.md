@@ -1,5 +1,7 @@
 # M2 image security decision
 
+> Historical Debian review. Ubuntu 24.04 supersedes this image and its exception window. The current CI requires zero High and Critical results with full OS and Python coverage.
+
 Reviewed: 29 October 2026 UTC. Expires: **28 November 2026 UTC**. Scope: local portfolio inference, no Payment integration or public deployment. This decision is a reviewed exception, **not a clean vulnerability scan or production approval**.
 
 ## Evidence and decision

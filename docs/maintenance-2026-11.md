@@ -13,3 +13,12 @@ The Trixie Trivy feed still reports the three SQLite advisories against the inst
 Debian tracks the fixes for [CVE-2026-119373](https://security-tracker.debian.org/tracker/CVE-2026-119373), [CVE-2026-119374](https://security-tracker.debian.org/tracker/CVE-2026-119374), and [CVE-2026-119379](https://security-tracker.debian.org/tracker/CVE-2026-119379).
 
 A follow-up regression confirms that missing runtime versions and malformed advisory lists fail closed.
+
+The final audit follow-up pins the Python and uv build images to their official
+multi-platform manifest digests. The container verification job also runs every
+Tuesday at 07:31 UTC to refresh the raw Trivy report and reapply the policy.
+The runtime image ID is retained in the scan and policy artifacts. Debian
+security packages still come from the live Trixie repositories so patched
+packages can reach the next build. Check the raw report and the policy output
+before the local-only exception expires on 28 November 2026. The audit
+follow-up preserves the existing expiry and advisory list.

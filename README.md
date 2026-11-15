@@ -13,7 +13,7 @@ uv sync --frozen
 export MPLCONFIGDIR="$PWD/.local/matplotlib"
 uv run --frozen fraud-ml generate --config configs/experiment.json --data-dir data/m1
 uv run --frozen fraud-ml train --data-dir data/m1 --output artifacts/m1
-uv run --frozen fraud-ml evaluate --data-dir data/m1 --output artifacts/m1 --report-dir docs/results/M1
+uv run --frozen fraud-ml evaluate --data-dir data/m1 --output artifacts/m1 --report-dir .local/m1-report
 ```
 
 `generate` freezes data, the separate reference and stratified row-ID partitions. `train` fits only training features, uses validation for checkpoints/model/threshold choices and persists decisions before test evaluation. `evaluate` never trains or reselects a model. It writes JSON metrics and standalone PR/calibration figures. The full 60,000-row experiment is explicit, not a PR CI task.
@@ -66,7 +66,7 @@ curl --fail http://127.0.0.1:8002/score -H 'Content-Type: application/json' \
 
 The response contains a finite score, `low_synthetic_risk`/`elevated_synthetic_risk`, immutable model/schema versions and explicit synthetic/experimental markers. Scores at or above the saved threshold receive the elevated indicator. There is no authorization/rejection of payments.
 
-Invalid shape/types/currency/extras return 422. Valid financial amounts outside the synthetic training range return 422 with `outside_training_domain`. Missing/corrupt/incompatible artifacts stop startup. Backend failures return generic 500 `inference_failed`; a concurrent inference receives 503 `inference_busy`. No failure becomes zero risk. Request events log only route/status/duration/version/error code. Access logs are disabled to avoid raw URLs/query strings.
+Invalid shape/types/currency/extras return 422. Valid financial amounts outside the synthetic training range return 422 with `outside_training_domain`. Missing/corrupt/incompatible artifacts stop startup. The score endpoint accepts up to 1 KiB of request body, permits eight pending score requests per process and allows two seconds to receive a body. Excess size returns 413, pending-capacity exhaustion returns 503 and a body timeout returns 408. Health checks bypass score admission. Backend failures return generic 500 `inference_failed`; a concurrent inference receives 503 `inference_busy`. No failure becomes zero risk. Request events log only route/status/duration/version/error code. Access logs are disabled to avoid raw URLs/query strings.
 
 Docker uses a versioned Python 3.12 slim base, current distribution security updates and the frozen Python lockfile. No data/model/secret is copied into the image. Run the trusted bundle read-only:
 

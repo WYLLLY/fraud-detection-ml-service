@@ -1,5 +1,6 @@
 """Local inference application: startup-only trusted loading and safe HTTP errors."""
 
+import asyncio
 import json
 import logging
 import os
@@ -12,12 +13,18 @@ import torch
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
+from starlette._utils import get_route_path
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from fraud_ml.bundle import load_bundle
 from fraud_ml.schemas import ScoreRequest, ScoreResponse
 from fraud_ml.serving import InferenceBusy, InferenceService
 
 __all__ = ["create_app", "load_bundle"]
+MAX_SCORE_BODY_BYTES = 1024
+MAX_PENDING_SCORES = 8
+SCORE_BODY_TIMEOUT_SECONDS = 2.0
+
 logger = logging.getLogger("fraud_ml.api")
 
 
@@ -25,6 +32,61 @@ def error_response(status: int, code: str) -> JSONResponse:
     return JSONResponse(
         status_code=status, content={"detail": {"code": code}}, headers={"X-Error-Code": code}
     )
+
+
+class ScoreAdmission:
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+        self.pending = 0
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if (
+            scope["type"] != "http"
+            or scope["method"] != "POST"
+            or get_route_path(scope) != "/score"
+        ):
+            await self.app(scope, receive, send)
+            return
+
+        # The single ASGI worker owns this counter. Admission never waits for a slot.
+        if self.pending >= MAX_PENDING_SCORES:
+            await error_response(503, "score_capacity_exceeded")(scope, receive, send)
+            return
+
+        self.pending += 1
+        try:
+            body = bytearray()
+            try:
+                async with asyncio.timeout(SCORE_BODY_TIMEOUT_SECONDS):
+                    while True:
+                        message = await receive()
+                        if message["type"] == "http.disconnect":
+                            await error_response(400, "request_incomplete")(scope, receive, send)
+                            return
+                        chunk = message.get("body", b"")
+                        if len(body) + len(chunk) > MAX_SCORE_BODY_BYTES:
+                            await error_response(413, "request_too_large")(scope, receive, send)
+                            return
+                        body.extend(chunk)
+                        if not message.get("more_body", False):
+                            break
+            except TimeoutError:
+                await error_response(408, "request_body_timeout")(scope, receive, send)
+                return
+
+            buffered: bytes | None = bytes(body)
+
+            async def replay_body() -> Message:
+                nonlocal buffered
+                if buffered is None:
+                    return await receive()
+                message: Message = {"type": "http.request", "body": buffered, "more_body": False}
+                buffered = None
+                return message
+
+            await self.app(scope, replay_body, send)
+        finally:
+            self.pending -= 1
 
 
 def create_app(bundle_dir: Path | None = None) -> FastAPI:
@@ -52,6 +114,8 @@ def create_app(bundle_dir: Path | None = None) -> FastAPI:
         title="Experimental Synthetic Risk", lifespan=lifespan, docs_url=None, redoc_url=None
     )
 
+    app.add_middleware(ScoreAdmission)
+
     @app.middleware("http")
     async def request_log(
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
@@ -59,7 +123,8 @@ def create_app(bundle_dir: Path | None = None) -> FastAPI:
         start = perf_counter()
         response = await call_next(request)
         response.headers["Cache-Control"] = "no-store"
-        route = request.url.path if request.url.path in ("/score", "/health") else "unmatched"
+        path = get_route_path(request.scope)
+        route = path if path in ("/score", "/health") else "unmatched"
         logger.info(
             json.dumps(
                 {

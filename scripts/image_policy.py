@@ -1,8 +1,7 @@
-"""Explicit, expiring review gate; a raw vulnerable scan never becomes clean."""
+"""Fail-closed scan and runtime gate for the local inference image."""
 
 import argparse
 import json
-from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, cast
 
@@ -33,7 +32,7 @@ def scan_results(scan: dict[str, Any]) -> list[dict[str, Any]]:
             raise ValueError("Malformed scan coverage")
         scope = (result_class, result_type)
         required = {
-            ("os-pkgs", "debian"): {"libc6"},
+            ("os-pkgs", "ubuntu"): {"libc6", "libpython3.12-minimal"},
             ("lang-pkgs", "python-pkg"): {"fraud-ml", "fastapi", "torch", "scikit-learn"},
         }
         if scope not in required or scope in coverage:
@@ -65,20 +64,18 @@ def scan_results(scan: dict[str, Any]) -> list[dict[str, Any]]:
                 raise ValueError("Malformed vulnerability")
         coverage.add(scope)
         results.append(result)
-    if coverage != {("os-pkgs", "debian"), ("lang-pkgs", "python-pkg")}:
+    if coverage != {("os-pkgs", "ubuntu"), ("lang-pkgs", "python-pkg")}:
         raise ValueError("Missing OS or Python scan coverage")
     return results
 
 
-def assess(
-    scan: dict[str, Any], runtime: dict[str, Any], policy: dict[str, Any], today: date
-) -> dict[str, object]:
+def assess(scan: dict[str, Any], runtime: dict[str, Any]) -> dict[str, object]:
     if (
-        scan["Metadata"]["OS"]["Family"] != "debian"
-        or str(scan["Metadata"]["OS"]["Name"]).split(".")[0] != "13"
+        scan["Metadata"]["OS"]["Family"] != "ubuntu"
+        or scan["Metadata"]["OS"]["Name"] != "24.04"
         or runtime["Image"] != scan["Metadata"]["ImageID"]
     ):
-        raise ValueError("Image/OS identity outside reviewed scope")
+        raise ValueError("Unexpected image or operating system")
     host = runtime["HostConfig"]
     if (
         runtime["Config"]["User"] != "10001:10001"
@@ -116,107 +113,30 @@ def assess(
         )
     ):
         raise ValueError("Missing mitigation proof")
-    reviewed = {
-        (p["id"], p["package"], p["version"]) for p in policy["exceptions"] if p.get("reason")
-    }
-    sqlite_fix = json_object(policy.get("verified_sqlite_fix", {}))
-    sqlite_package: object = sqlite_fix.get("package_version")
-    sqlite_runtime: object = sqlite_fix.get("runtime_version")
-    sqlite_advisories: object = sqlite_fix.get("advisories")
-    reviewed_sqlite_advisories: set[str] = set()
-    if "verified_sqlite_fix" in policy:
-        if (
-            not isinstance(sqlite_package, str)
-            or not sqlite_package.strip()
-            or not isinstance(sqlite_runtime, str)
-            or not sqlite_runtime.strip()
-            or not isinstance(sqlite_advisories, list)
-            or not sqlite_advisories
-            or not all(
-                isinstance(cve, str) and cve.strip()
-                for cve in cast(list[object], sqlite_advisories)
-            )
-        ):
-            raise ValueError("Incomplete verified SQLite fix configuration")
-        reviewed_sqlite_advisories = set(cast(list[str], sqlite_advisories))
-    valid_review = today <= date.fromisoformat(policy["expires"])
-    accepted: list[str] = []
-    verified_fixes: list[str] = []
     for result in scan_results(scan):
-        sqlite_verified = (
-            result["Type"] == "debian"
-            and bool(reviewed_sqlite_advisories)
-            and proof.get("sqlite_version") == sqlite_runtime
-            and any(
-                p["Name"] == "libsqlite3-0"
-                and p.get("SrcName") == "sqlite3"
-                and f"{p['Version']}-{p.get('Release')}" == sqlite_package
-                for p in result["Packages"]
-            )
-        )
         for finding in cast(list[dict[str, Any]], result.get("Vulnerabilities", [])):
             severity = finding["Severity"]
-            if severity == "CRITICAL":
-                raise ValueError("CRITICAL finding cannot be exempted")
-            if severity not in ("UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"):
+            if severity in {"HIGH", "CRITICAL"}:
+                raise ValueError(f"{severity} finding blocks the image")
+            if severity not in {"UNKNOWN", "LOW", "MEDIUM"}:
                 raise ValueError("Malformed severity")
-            if severity != "HIGH":
-                continue
-            key = (finding["VulnerabilityID"], finding["PkgName"], finding["InstalledVersion"])
-            if (
-                valid_review
-                and sqlite_verified
-                and key[1:] == ("libsqlite3-0", sqlite_package)
-                and key[0] in reviewed_sqlite_advisories
-                and finding.get("Status") == "affected"
-                and not finding.get("FixedVersion")
-            ):
-                verified_fixes.append(finding["VulnerabilityID"])
-                continue
-            if (
-                result["Type"] != "debian"
-                or key not in reviewed
-                or finding.get("FixedVersion")
-                or not valid_review
-            ):
-                raise ValueError("New, fixable, expired or unreviewed HIGH finding")
-            accepted.append(finding["VulnerabilityID"])
-    status = "PASS"
-    if accepted:
-        status = "ACCEPTED_REVIEWED_EXCEPTIONS"
-    elif verified_fixes:
-        status = "VERIFIED_VENDOR_FIXES"
-    return {
-        "status": status,
-        "scanner_clean": not (accepted or verified_fixes),
-        "accepted_occurrences": len(accepted),
-        "accepted_cves": sorted(set(accepted)),
-        "verified_vendor_fix_occurrences": len(verified_fixes),
-        "verified_vendor_fix_cves": sorted(set(verified_fixes)),
-        "expires": policy["expires"],
-        "image": runtime["Image"],
-    }
+    return {"status": "PASS", "scanner_clean": True, "image": runtime["Image"]}
 
 
 def main() -> None:
-    from fraud_ml.artifact_io import digest, identity, read_json, write_json
+    from fraud_ml.artifact_io import read_json, write_json
 
     parser = argparse.ArgumentParser()
-    for name in ("scan", "runtime", "proof", "policy", "output"):
+    for name in ("scan", "runtime", "proof", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--scanner-exit-code", type=int, required=True)
     args = parser.parse_args()
-    policy = read_json(args.policy)
-    sources = {name: digest(Path(name)) for name in policy["scope_files"]}
-    if identity(sources) != policy["scope_sha256"]:
-        raise ValueError("Code/container scope changed; independent re-review required")
     inspection = json.loads(args.runtime.read_text())
     runtime = cast(dict[str, Any], inspection[0] if isinstance(inspection, list) else inspection)
     runtime["proof"] = read_json(args.proof)
-    result = assess(read_json(args.scan), runtime, policy, datetime.now(UTC).date())
-    expected = 0 if result["scanner_clean"] else 1
-    if args.scanner_exit_code != expected:
-        raise ValueError("Scanner exit/report mismatch")
+    if args.scanner_exit_code != 0:
+        raise ValueError("Image scan failed or found a High/Critical advisory")
+    result = assess(read_json(args.scan), runtime)
     write_json(args.output, {**result, "raw_scanner_exit_code": args.scanner_exit_code})
     print(json.dumps(result))
 

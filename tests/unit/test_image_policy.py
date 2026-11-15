@@ -1,5 +1,4 @@
 from copy import deepcopy
-from datetime import date
 from typing import Any
 
 import pytest
@@ -7,17 +6,19 @@ import pytest
 from scripts.image_policy import assess
 
 
-def fixture() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+def fixture() -> tuple[dict[str, Any], dict[str, Any]]:
     scan = {
         "SchemaVersion": 2,
         "ArtifactType": "container_image",
-        "Metadata": {"ImageID": "sha256:test", "OS": {"Family": "debian", "Name": "13.7"}},
+        "Metadata": {"ImageID": "sha256:test", "OS": {"Family": "ubuntu", "Name": "24.04"}},
         "Results": [
             {
-                "Target": "image (debian 13)",
+                "Target": "image (ubuntu 24.04)",
                 "Class": "os-pkgs",
-                "Type": "debian",
-                "Packages": [{"Name": "libc6", "Version": "1"}],
+                "Type": "ubuntu",
+                "Packages": [
+                    {"Name": name, "Version": "1"} for name in ("libc6", "libpython3.12-minimal")
+                ],
                 "Vulnerabilities": [
                     {
                         "VulnerabilityID": "CVE-known",
@@ -61,26 +62,7 @@ def fixture() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
             "archive_tar_absent": True,
         },
     }
-    policy = {
-        "expires": "2026-11-28",
-        "exceptions": [
-            {
-                "id": "CVE-known",
-                "package": "libexample",
-                "version": "1",
-                "reason": "reviewed local-only non-reachability",
-            }
-        ],
-    }
-    return scan, runtime, policy
-
-
-def test_reviewed_exact_exception_is_explicit_not_a_clean_scan() -> None:
-    scan, runtime, policy = fixture()
-    result = assess(scan, runtime, policy, date(2026, 10, 29))
-    assert result["scanner_clean"] is False
-    assert result["status"] == "ACCEPTED_REVIEWED_EXCEPTIONS"
-    assert result["accepted_occurrences"] == 1
+    return scan, runtime
 
 
 @pytest.mark.parametrize(
@@ -90,7 +72,7 @@ def test_reviewed_exact_exception_is_explicit_not_a_clean_scan() -> None:
         "new_cve",
         "new_version",
         "fix_available",
-        "expired",
+        "wrong_os_version",
         "root",
         "writable",
         "capabilities",
@@ -104,8 +86,10 @@ def test_reviewed_exact_exception_is_explicit_not_a_clean_scan() -> None:
 )
 def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
     original = fixture()
-    scan, runtime, policy = deepcopy(original)
+    scan, runtime = deepcopy(original)
     finding = scan["Results"][0]["Vulnerabilities"][0]
+    if change not in {"critical", "new_cve", "new_version", "fix_available", "malformed_severity"}:
+        scan["Results"][0]["Vulnerabilities"] = []
     if change == "critical":
         finding["Severity"] = "CRITICAL"
     elif change == "new_cve":
@@ -114,8 +98,8 @@ def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
         finding["InstalledVersion"] = "2"
     elif change == "fix_available":
         finding["FixedVersion"] = "2"
-    elif change == "expired":
-        policy["expires"] = "2026-10-28"
+    elif change == "wrong_os_version":
+        scan["Metadata"]["OS"]["Name"] = "22.04"
     elif change == "host_network":
         runtime["HostConfig"]["NetworkMode"] = "host"
     elif change == "malformed_severity":
@@ -135,7 +119,7 @@ def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
     elif change == "helper_present":
         runtime["proof"]["helpers_absent"] = False
     with pytest.raises(ValueError):
-        assess(scan, runtime, policy, date(2026, 10, 29))
+        assess(scan, runtime)
 
 
 @pytest.mark.parametrize(
@@ -143,7 +127,7 @@ def test_unknown_or_out_of_scope_risk_is_never_accepted(change: str) -> None:
     ["empty_result", "missing_os", "missing_python", "wrong_vulnerabilities", "no_packages"],
 )
 def test_incomplete_scan_never_becomes_clean(change: str) -> None:
-    scan, runtime, policy = fixture()
+    scan, runtime = fixture()
     if change == "empty_result":
         scan["Results"] = [{}]
     elif change == "missing_os":
@@ -155,76 +139,52 @@ def test_incomplete_scan_never_becomes_clean(change: str) -> None:
     elif change == "no_packages":
         scan["Results"][0]["Packages"] = []
     with pytest.raises(ValueError):
-        assess(scan, runtime, policy, date(2026, 10, 29))
+        assess(scan, runtime)
 
 
 def test_complete_clean_scan_permits_omitted_vulnerability_list() -> None:
-    scan, runtime, policy = fixture()
+    scan, runtime = fixture()
     del scan["Results"][0]["Vulnerabilities"]
-    result = assess(scan, runtime, policy, date(2026, 10, 29))
+    result = assess(scan, runtime)
     assert result["scanner_clean"] is True
-    assert result["accepted_occurrences"] == 0
 
 
 @pytest.mark.parametrize(
-    "change",
-    [
-        "none",
-        "wrong_library",
-        "wrong_inventory",
-        "unknown_advisory",
-        "fix_available",
-        "expired",
-        "missing_runtime_versions",
-        "malformed_advisories",
-    ],
+    "advisory",
+    ["CVE-2026-119373", "CVE-2026-119374", "CVE-2026-119379"],
 )
-def test_verified_debian_sqlite_package_is_reported_separately(change: str) -> None:
-    scan, runtime, policy = fixture()
-    advisory = "CVE-2026-119373"
-    package = {
-        "Name": "libsqlite3-0",
-        "Version": "3.54.1",
-        "Release": "2",
-        "SrcName": "sqlite3",
-    }
-    finding = {
-        "VulnerabilityID": advisory,
-        "PkgName": "libsqlite3-0",
-        "InstalledVersion": "3.54.1-2",
-        "Severity": "HIGH",
-        "Status": "affected",
-    }
-    scan["Results"][0]["Packages"].append(package)
-    scan["Results"][0]["Vulnerabilities"] = [finding]
+def test_sqlite_high_result_blocks_even_with_runtime_version_proof(advisory: str) -> None:
+    scan, runtime = fixture()
+    scan["Results"][0]["Vulnerabilities"][0].update(
+        VulnerabilityID=advisory,
+        PkgName="libsqlite3-0",
+        InstalledVersion="3.54.1-2",
+    )
     runtime["proof"]["sqlite_version"] = "3.54.1"
-    policy["verified_sqlite_fix"] = {
-        "advisories": [advisory],
-        "package_version": "3.54.1-2",
-        "runtime_version": "3.54.1",
-    }
-    if change == "wrong_library":
-        runtime["proof"]["sqlite_version"] = "3.46.1"
-    elif change == "wrong_inventory":
-        package["Release"] = "1"
-    elif change == "unknown_advisory":
-        finding["VulnerabilityID"] = "CVE-new"
-    elif change == "fix_available":
-        finding["FixedVersion"] = "3.54.2"
-    elif change == "expired":
-        policy["expires"] = "2026-10-28"
-    elif change == "missing_runtime_versions":
-        del runtime["proof"]["sqlite_version"]
-        del policy["verified_sqlite_fix"]["runtime_version"]
-    elif change == "malformed_advisories":
-        policy["verified_sqlite_fix"]["advisories"] = advisory
-    today = date(2026, 10, 29)
-    if change != "none":
-        with pytest.raises(ValueError):
-            assess(scan, runtime, policy, today)
-        return
-    result = assess(scan, runtime, policy, today)
-    assert result["status"] == "VERIFIED_VENDOR_FIXES"
-    assert result["scanner_clean"] is False
-    assert result["accepted_occurrences"] == 0
-    assert result["verified_vendor_fix_cves"] == [advisory]
+    with pytest.raises(ValueError, match="HIGH"):
+        assess(scan, runtime)
+
+
+@pytest.mark.parametrize("name", ["libc6", "libpython3.12-minimal"])
+def test_missing_native_runtime_package_blocks_clean_report(name: str) -> None:
+    scan, runtime = fixture()
+    scan["Results"][0].pop("Vulnerabilities")
+    scan["Results"][0]["Packages"] = [
+        package for package in scan["Results"][0]["Packages"] if package["Name"] != name
+    ]
+    with pytest.raises(ValueError, match="package coverage"):
+        assess(scan, runtime)
+
+
+def test_reviewed_high_still_blocks_the_release() -> None:
+    scan, runtime = fixture()
+    with pytest.raises(ValueError, match="HIGH"):
+        assess(scan, runtime)
+
+
+def test_clean_ubuntu_scan_covers_runtime_python_and_native_packages() -> None:
+    scan, runtime = fixture()
+    scan["Results"][0]["Vulnerabilities"] = []
+    result = assess(scan, runtime)
+    assert result["status"] == "PASS"
+    assert result["scanner_clean"] is True
